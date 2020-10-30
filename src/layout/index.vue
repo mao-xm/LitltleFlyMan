@@ -27,7 +27,7 @@ export default {
     AppMain,
     Navbar,
     RightPanel,
-    Settings,
+    Settings,//sss
     Sidebar,
     TagsView
   },
