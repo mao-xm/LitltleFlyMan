@@ -123,7 +123,7 @@
 </template>
 
 <script>
-import { listCollege, getCollege, delCollege, addCollege, updateCollege, listCollegeExcludeChild } from "@/api/system/dept";
+import { listCollege, getCollege, delCollege, addCollege, updateCollege, listCollegeExcludeChild } from "@/api/system/college";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 

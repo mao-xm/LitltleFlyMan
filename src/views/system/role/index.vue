@@ -219,17 +219,17 @@
           </el-select>
         </el-form-item>
         <el-form-item label="数据权限" v-show="form.dataScope == 2">
-          <el-checkbox v-model="deptExpand" @change="handleCheckedTreeExpand($event, 'dept')">展开/折叠</el-checkbox>
-          <el-checkbox v-model="deptNodeAll" @change="handleCheckedTreeNodeAll($event, 'dept')">全选/全不选</el-checkbox>
-          <el-checkbox v-model="form.deptCheckStrictly" @change="handleCheckedTreeConnect($event, 'dept')">父子联动</el-checkbox>
+          <el-checkbox v-model="collegeExpand" @change="handleCheckedTreeExpand($event, 'college')">展开/折叠</el-checkbox>
+          <el-checkbox v-model="collegeNodeAll" @change="handleCheckedTreeNodeAll($event, 'college')">全选/全不选</el-checkbox>
+          <el-checkbox v-model="form.collegeCheckStrictly" @change="handleCheckedTreeConnect($event, 'college')">父子联动</el-checkbox>
           <el-tree
             class="tree-border"
-            :data="deptOptions"
+            :data="collegeOptions"
             show-checkbox
             default-expand-all
-            ref="dept"
+            ref="college"
             node-key="id"
-            :check-strictly="!form.deptCheckStrictly"
+            :check-strictly="!form.collegeCheckStrictly"
             empty-text="加载中，请稍后"
             :props="defaultProps"
           ></el-tree>
@@ -246,7 +246,7 @@
 <script>
 import { listRole, getRole, delRole, addRole, updateRole, exportRole, dataScope, changeRoleStatus } from "@/api/system/role";
 import { treeselect as menuTreeselect, roleMenuTreeselect } from "@/api/system/menu";
-import { treeselect as deptTreeselect, roleDeptTreeselect } from "@/api/system/dept";
+import { treeselect as collegeTreeselect, roleCollegeTreeselect } from "@/api/system/college";
 
 export default {
   name: "Role",
@@ -274,8 +274,8 @@ export default {
       openDataScope: false,
       menuExpand: false,
       menuNodeAll: false,
-      deptExpand: true,
-      deptNodeAll: false,
+      collegeExpand: true,
+      collegeNodeAll: false,
       // 日期范围
       dateRange: [],
       // 状态数据字典
@@ -292,11 +292,11 @@ export default {
         },
         {
           value: "3",
-          label: "本部门数据权限"
+          label: "本学院数据权限"
         },
         {
           value: "4",
-          label: "本部门及以下数据权限"
+          label: "本学院及以下数据权限"
         },
         {
           value: "5",
@@ -305,8 +305,8 @@ export default {
       ],
       // 菜单列表
       menuOptions: [],
-      // 部门列表
-      deptOptions: [],
+      // 学院列表
+      collegeOptions: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -359,10 +359,10 @@ export default {
         this.menuOptions = response.data;
       });
     },
-    /** 查询部门树结构 */
-    getDeptTreeselect() {
-      deptTreeselect().then(response => {
-        this.deptOptions = response.data;
+    /** 查询学院树结构 */
+    getCollegeTreeselect() {
+      collegeTreeselect().then(response => {
+        this.collegeOptions = response.data;
       });
     },
     // 所有菜单节点数据
@@ -374,12 +374,12 @@ export default {
       checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
       return checkedKeys;
     },
-    // 所有部门节点数据
-    getDeptAllCheckedKeys() {
-      // 目前被选中的部门节点
-      let checkedKeys = this.$refs.dept.getCheckedKeys();
-      // 半选中的部门节点
-      let halfCheckedKeys = this.$refs.dept.getHalfCheckedKeys();
+    // 所有学院节点数据
+    getCollegeAllCheckedKeys() {
+      // 目前被选中的学院节点
+      let checkedKeys = this.$refs.college.getCheckedKeys();
+      // 半选中的学院节点
+      let halfCheckedKeys = this.$refs.college.getHalfCheckedKeys();
       checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
       return checkedKeys;
     },
@@ -390,10 +390,10 @@ export default {
         return response;
       });
     },
-    /** 根据角色ID查询部门树结构 */
-    getRoleDeptTreeselect(roleId) {
-      return roleDeptTreeselect(roleId).then(response => {
-        this.deptOptions = response.depts;
+    /** 根据角色ID查询学院树结构 */
+    getRoleCollegeTreeselect(roleId) {
+      return roleCollegeTreeselect(roleId).then(response => {
+        this.collegeOptions = response.colleges;
         return response;
       });
     },
@@ -429,8 +429,8 @@ export default {
       }
       this.menuExpand = false,
       this.menuNodeAll = false,
-      this.deptExpand = true,
-      this.deptNodeAll = false,
+      this.collegeExpand = true,
+      this.collegeNodeAll = false,
       this.form = {
         roleId: undefined,
         roleName: undefined,
@@ -438,9 +438,9 @@ export default {
         roleSort: 0,
         status: "0",
         menuIds: [],
-        deptIds: [],
+        collegeIds: [],
         menuCheckStrictly: true,
-        deptCheckStrictly: true,
+        collegeCheckStrictly: true,
         remark: undefined
       };
       this.resetForm("form");
@@ -469,10 +469,10 @@ export default {
         for (let i = 0; i < treeList.length; i++) {
           this.$refs.menu.store.nodesMap[treeList[i].id].expanded = value;
         }
-      } else if (type == 'dept') {
-        let treeList = this.deptOptions;
+      } else if (type == 'college') {
+        let treeList = this.collegeOptions;
         for (let i = 0; i < treeList.length; i++) {
-          this.$refs.dept.store.nodesMap[treeList[i].id].expanded = value;
+          this.$refs.college.store.nodesMap[treeList[i].id].expanded = value;
         }
       }
     },
@@ -480,16 +480,16 @@ export default {
     handleCheckedTreeNodeAll(value, type) {
       if (type == 'menu') {
         this.$refs.menu.setCheckedNodes(value ? this.menuOptions: []);
-      } else if (type == 'dept') {
-        this.$refs.dept.setCheckedNodes(value ? this.deptOptions: []);
+      } else if (type == 'college') {
+        this.$refs.college.setCheckedNodes(value ? this.collegeOptions: []);
       }
     },
     // 树权限（父子联动）
     handleCheckedTreeConnect(value, type) {
       if (type == 'menu') {
         this.form.menuCheckStrictly = value ? true: false;
-      } else if (type == 'dept') {
-        this.form.deptCheckStrictly = value ? true: false;
+      } else if (type == 'college') {
+        this.form.collegeCheckStrictly = value ? true: false;
       }
     },
     /** 新增按钮操作 */
@@ -518,13 +518,13 @@ export default {
     /** 分配数据权限操作 */
     handleDataScope(row) {
       this.reset();
-      const roleDeptTreeselect = this.getRoleDeptTreeselect(row.roleId);
+      const roleCollegeTreeselect = this.getRoleCollegeTreeselect(row.roleId);
       getRole(row.roleId).then(response => {
         this.form = response.data;
         this.openDataScope = true;
         this.$nextTick(() => {
-          roleDeptTreeselect.then(res => {
-            this.$refs.dept.setCheckedKeys(res.checkedKeys);
+          roleCollegeTreeselect.then(res => {
+            this.$refs.college.setCheckedKeys(res.checkedKeys);
           });
         });
         this.title = "分配数据权限";
@@ -555,7 +555,7 @@ export default {
     /** 提交按钮（数据权限） */
     submitDataScope: function() {
       if (this.form.roleId != undefined) {
-        this.form.deptIds = this.getDeptAllCheckedKeys();
+        this.form.collegeIds = this.getCollegeAllCheckedKeys();
         dataScope(this.form).then(response => {
           this.msgSuccess("修改成功");
           this.openDataScope = false;

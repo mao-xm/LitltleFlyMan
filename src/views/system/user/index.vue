@@ -1,12 +1,12 @@
 <template>
   <div class="app-container">
     <el-row :gutter="20">
-      <!--部门数据-->
+      <!--学院数据-->
       <el-col :span="4" :xs="24">
         <div class="head-container">
           <el-input
-            v-model="deptName"
-            placeholder="请输入部门名称"
+            v-model="collegeName"
+            placeholder="请输入学院名称"
             clearable
             size="small"
             prefix-icon="el-icon-search"
@@ -15,7 +15,7 @@
         </div>
         <div class="head-container">
           <el-tree
-            :data="deptOptions"
+            :data="collegeOptions"
             :props="defaultProps"
             :expand-on-click-node="false"
             :filter-node-method="filterNode"
@@ -138,7 +138,7 @@
           <el-table-column label="用户编号" align="center" prop="userId" />
           <el-table-column label="用户名称" align="center" prop="userName" :show-overflow-tooltip="true" />
           <el-table-column label="用户昵称" align="center" prop="nickName" :show-overflow-tooltip="true" />
-          <el-table-column label="部门" align="center" prop="dept.deptName" :show-overflow-tooltip="true" />
+          <el-table-column label="学院" align="center" prop="college.collegeName" :show-overflow-tooltip="true" />
           <el-table-column label="手机号码" align="center" prop="phonenumber" width="120" />
           <el-table-column label="状态" align="center">
             <template slot-scope="scope">
@@ -208,8 +208,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="归属部门" prop="deptId">
-              <treeselect v-model="form.deptId" :options="deptOptions" :show-count="true" placeholder="请选择归属部门" />
+            <el-form-item label="归属学院" prop="collegeId">
+              <treeselect v-model="form.collegeId" :options="collegeOptions" :show-count="true" placeholder="请选择归属学院" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -340,7 +340,7 @@
 <script>
 import { listUser, getUser, delUser, addUser, updateUser, exportUser, resetUserPwd, changeUserStatus, importTemplate } from "@/api/system/user";
 import { getToken } from "@/utils/auth";
-import { treeselect } from "@/api/system/dept";
+import { treeselect } from "@/api/system/college";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
@@ -365,12 +365,12 @@ export default {
       userList: null,
       // 弹出层标题
       title: "",
-      // 部门树选项
-      deptOptions: undefined,
+      // 学院树选项
+      collegeOptions: undefined,
       // 是否显示弹出层
       open: false,
-      // 部门名称
-      deptName: undefined,
+      // 学院名称
+      collegeName: undefined,
       // 默认密码
       initPassword: undefined,
       // 日期范围
@@ -411,7 +411,7 @@ export default {
         userName: undefined,
         phonenumber: undefined,
         status: undefined,
-        deptId: undefined
+        collegeId: undefined
       },
       // 表单校验
       rules: {
@@ -421,8 +421,8 @@ export default {
         nickName: [
           { required: true, message: "用户昵称不能为空", trigger: "blur" }
         ],
-        deptId: [
-          { required: true, message: "归属部门不能为空", trigger: "blur" }
+        collegeId: [
+          { required: true, message: "归属学院不能为空", trigger: "blur" }
         ],
         password: [
           { required: true, message: "用户密码不能为空", trigger: "blur" }
@@ -447,8 +447,8 @@ export default {
     };
   },
   watch: {
-    // 根据名称筛选部门树
-    deptName(val) {
+    // 根据名称筛选学院树
+    collegeName(val) {
       this.$refs.tree.filter(val);
     }
   },
@@ -476,10 +476,10 @@ export default {
         }
       );
     },
-    /** 查询部门下拉树结构 */
+    /** 查询学院下拉树结构 */
     getTreeselect() {
       treeselect().then(response => {
-        this.deptOptions = response.data;
+        this.collegeOptions = response.data;
       });
     },
     // 筛选节点
@@ -489,7 +489,7 @@ export default {
     },
     // 节点单击事件
     handleNodeClick(data) {
-      this.queryParams.deptId = data.id;
+      this.queryParams.collegeId = data.id;
       this.getList();
     },
     // 用户状态修改
@@ -516,7 +516,7 @@ export default {
     reset() {
       this.form = {
         userId: undefined,
-        deptId: undefined,
+        collegeId: undefined,
         userName: undefined,
         nickName: undefined,
         password: undefined,

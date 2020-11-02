@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-// 查询部门列表
+// 查询学院列表
 export function listCollege(query) {
   return request({
     url: '/system/college/list',
@@ -9,7 +9,7 @@ export function listCollege(query) {
   })
 }
 
-// 查询部门列表（排除节点）
+// 查询学院列表（排除节点）
 export function listCollegeExcludeChild(collegeId) {
   return request({
     url: '/system/college/list/exclude/' + collegeId,
@@ -17,7 +17,7 @@ export function listCollegeExcludeChild(collegeId) {
   })
 }
 
-// 查询部门详细
+// 查询学院详细
 export function getCollege(collegeId) {
   return request({
     url: '/system/college/' + collegeId,
@@ -25,7 +25,7 @@ export function getCollege(collegeId) {
   })
 }
 
-// 查询部门下拉树结构
+// 查询学院下拉树结构
 export function treeselect() {
   return request({
     url: '/system/college/treeselect',
@@ -33,7 +33,7 @@ export function treeselect() {
   })
 }
 
-// 根据角色ID查询部门树结构
+// 根据角色ID查询学院树结构
 export function roleCollegeTreeselect(roleId) {
   return request({
     url: '/system/college/roleCollegeTreeselect/' + roleId,
@@ -41,7 +41,7 @@ export function roleCollegeTreeselect(roleId) {
   })
 }
 
-// 新增部门
+// 新增学院
 export function addCollege(data) {
   return request({
     url: '/system/college',
@@ -50,7 +50,7 @@ export function addCollege(data) {
   })
 }
 
-// 修改部门
+// 修改学院
 export function updateCollege(data) {
   return request({
     url: '/system/college',
@@ -59,7 +59,7 @@ export function updateCollege(data) {
   })
 }
 
-// 删除部门
+// 删除学院
 export function delCollege(collegeId) {
   return request({
     url: '/system/college/' + collegeId,
