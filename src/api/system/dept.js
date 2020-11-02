@@ -1,26 +1,26 @@
 import request from '@/utils/request'
 
 // 查询部门列表
-export function listDept(query) {
+export function listCollege(query) {
   return request({
-    url: '/system/dept/list',
+    url: '/system/college/list',
     method: 'get',
     params: query
   })
 }
 
 // 查询部门列表（排除节点）
-export function listDeptExcludeChild(deptId) {
+export function listCollegeExcludeChild(collegeId) {
   return request({
-    url: '/system/dept/list/exclude/' + deptId,
+    url: '/system/college/list/exclude/' + collegeId,
     method: 'get'
   })
 }
 
 // 查询部门详细
-export function getDept(deptId) {
+export function getCollege(collegeId) {
   return request({
-    url: '/system/dept/' + deptId,
+    url: '/system/college/' + collegeId,
     method: 'get'
   })
 }
@@ -28,41 +28,41 @@ export function getDept(deptId) {
 // 查询部门下拉树结构
 export function treeselect() {
   return request({
-    url: '/system/dept/treeselect',
+    url: '/system/college/treeselect',
     method: 'get'
   })
 }
 
 // 根据角色ID查询部门树结构
-export function roleDeptTreeselect(roleId) {
+export function roleCollegeTreeselect(roleId) {
   return request({
-    url: '/system/dept/roleDeptTreeselect/' + roleId,
+    url: '/system/college/roleCollegeTreeselect/' + roleId,
     method: 'get'
   })
 }
 
 // 新增部门
-export function addDept(data) {
+export function addCollege(data) {
   return request({
-    url: '/system/dept',
+    url: '/system/college',
     method: 'post',
     data: data
   })
 }
 
 // 修改部门
-export function updateDept(data) {
+export function updateCollege(data) {
   return request({
-    url: '/system/dept',
+    url: '/system/college',
     method: 'put',
     data: data
   })
 }
 
 // 删除部门
-export function delDept(deptId) {
+export function delCollege(collegeId) {
   return request({
-    url: '/system/dept/' + deptId,
+    url: '/system/college/' + collegeId,
     method: 'delete'
   })
 }
