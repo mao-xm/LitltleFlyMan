@@ -21,7 +21,7 @@
       </el-form-item>
       S
       <el-form-item label="反馈状态" prop="feedbackStatus">
-        <el-select v-model="queryParams.feedbackStatus" placeholder="反馈状态" clearable size="small">
+        <el-select v-model="queryParams.status" placeholder="反馈状态" clearable size="small">
           <el-option
             v-for="dict in feedbackOptions"
             :key="dict.value"
@@ -43,7 +43,7 @@
         ></el-date-picker>
       </el-form-item>
       <el-form-item label="匿名状态" prop="AnonymityStatus">
-        <el-select v-model="queryParams.AnonymityStatus" placeholder="匿名状态" clearable size="small">
+        <el-select v-model="queryParams.anonymityFlag" placeholder="匿名状态" clearable size="small">
           <el-option
             v-for="dict in anonymityOptions"
             :key="dict.value"
@@ -59,7 +59,7 @@
     </el-form>
               <el-table
               :data="feedbackList"
-              border
+              v-loading="loading"
               style="width: 100%;">
               <el-table-column
                 prop="feedbackId"
@@ -176,17 +176,17 @@ export default {
       // 是否显示弹出层
       open: false,
       feedbackOptions: [{
-          value: '选项1',
+          value: '已处理',
           label: '已处理'
         }, {
-          value: '选项2',
+          value: '未处理',
           label: '未处理'
         }],
       anonymityOptions:[{
-          value: '选项1',
+          value: '匿名',
           label: '匿名'
         }, {
-          value: '选项2',
+          value: '不匿名',
           label: '不匿名'
         }
 
@@ -197,8 +197,8 @@ export default {
         pageSize: 10,
         studentId: undefined,
         studentName: undefined,
-        feedbackStatus: undefined,
-        AnonymityStatus:undefined
+        status: undefined,
+        anonymityFlag:undefined
       },
       // 表单参数
       form: {},
@@ -230,9 +230,31 @@ export default {
     /** 查询反馈列表 */
     getList() {
       this.loading = true;
+      if(this.queryParams.status=='未处理'){
+        this.queryParams.status='0';
+      }
+      if(this.queryParams.anonymityFlag=='不匿名'){
+        this.queryParams.anonymityFlag=0;
+      }
+      if(this.queryParams.status=='已处理'){
+        this.queryParams.status='1';
+      }
+      if(this.queryParams.anonymityFlag=='匿名'){
+        this.queryParams.anonymityFlag=1;
+      }
        listFeedback(this.addDateRange(this.queryParams, this.dateRange)).then(
         response => {
           this.feedbackList = response.rows;
+          var array=this.feedbackList.map((item)=> {
+          if( item.status==0){
+            item.status='未处理';
+          }
+          else{
+             item.status='已处理';
+          }
+          return item;
+           })
+           this.feedbackList=array;
           this.total = response.total;
           this.loading = false;
         }
