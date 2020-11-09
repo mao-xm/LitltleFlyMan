@@ -9,6 +9,15 @@ export function listFeedback(query) {
   })
 }
 
+// 修改反馈状态
+export function updateFeedback(query) {
+  return request({
+    url: '/system/feedback',
+    method: 'put',
+    params: query
+  })
+}
+
 // 查询岗位详细
 // export function getPost(postId) {
 //   return request({
