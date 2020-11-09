@@ -14,7 +14,7 @@ export function updateFeedback(query) {
   return request({
     url: '/system/feedback',
     method: 'put',
-    params: query
+    data: query
   })
 }
 //查看反馈详情

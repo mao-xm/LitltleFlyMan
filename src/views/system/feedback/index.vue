@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="学生编码" prop="postCode">
+      <el-form-item label="学生编码" prop="studentId">
         <el-input
           v-model="queryParams.studentId"
           placeholder="请输入学生编码"
@@ -10,7 +10,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="学生名" prop="postName">
+      <el-form-item label="学生名" prop="studentName">
         <el-input
           v-model="queryParams.studentName"
           placeholder="请输入学生名"
@@ -19,8 +19,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      S
-      <el-form-item label="反馈状态" prop="feedbackStatus">
+      <el-form-item label="反馈状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="反馈状态" clearable size="small">
           <el-option
             v-for="dict in feedbackOptions"
@@ -30,7 +29,7 @@
           />
         </el-select>
       </el-form-item>
-       <el-form-item label="时间" prop="createTime">
+       <el-form-item label="时间" prop="dateRange">
          <el-date-picker
           v-model="dateRange"
           size="small"
@@ -42,7 +41,7 @@
           end-placeholder="结束日期"
         ></el-date-picker>
       </el-form-item>
-      <el-form-item label="匿名状态" prop="AnonymityStatus">
+      <el-form-item label="匿名状态" prop="anonymityFlag">
         <el-select v-model="queryParams.anonymityFlag" placeholder="匿名状态" clearable size="small">
           <el-option
             v-for="dict in anonymityOptions"
@@ -59,17 +58,14 @@
     </el-form>
         <el-table
         :data="feedbackList"
-        v-loading="loading"
-        style="width: 100%;">
+        v-loading="loading">
             <el-table-column
               prop="feedbackId"
-              label="编号"
-              width="180">
+              label="编号">
             </el-table-column>
             <el-table-column
               prop="studentName"
-              label="用户名"
-              width="180">
+              label="用户名">
             </el-table-column>
             <el-table-column
               prop="studentId"
@@ -90,13 +86,13 @@
                 type="text"
                 icon="el-icon-edit"
                 @click="handleUpdate(scope.row)"
-              >处理</el-button> <!-- v-hasPermi="['system:post:edit']" -->
+              >处理</el-button>
               <el-button
                 size="mini"
                 type="text"
                 icon="el-icon-more"
                 @click="handleDetail(scope.row)"
-              >详情</el-button><!--v-hasPermi="['system:post:remove']" -->
+              >详情</el-button>
             </template>
           </el-table-column>
             </el-table>
@@ -108,29 +104,42 @@
       @pagination="getList"
     />
      <!-- 添加或修改参数配置对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <!-- <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="字典名称" prop="dictName">
-          <el-input v-model="form.dictName" placeholder="请输入字典名称" />
-        </el-form-item>
-        <el-form-item label="字典类型" prop="dictType">
-          <el-input v-model="form.dictType" placeholder="请输入字典类型" />
-        </el-form-item>
-        <el-form-item label="状态" prop="status">
-          <el-radio-group v-model="form.status">
-            <el-radio
-              v-for="dict in statusOptions"
-              :key="dict.dictValue"
-              :label="dict.dictValue"
-            >{{dict.dictLabel}}</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
-        </el-form-item>
-      </el-form> -->
+     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+      <div id="detail" width="500px" v-for="(item,index) in (feedbackDetail.sysFeedbackMedias)" :key="index">
+         <div class="img" >
+           <img :src="item.feedbackMediaUrl" width="100px">
+           <img :src="item.feedbackMediaUrl" width="100px">
+           <img :src="item.feedbackMediaUrl" width="100px" >
+           <img :src="item.feedbackMediaUrl" width="100px">
+           <img :src="item.feedbackMediaUrl" width="100px">
+           <img :src="item.feedbackMediaUrl" width="100px" >
+         </div>
+         <div class="content1">
+           <div class="title">编号：</div>
+           <div class="feedbackContent">{{feedbackDetail.feedbackId}}</div>
+         </div>
+          <div class="content">
+           <div class="title">用户名：</div>
+           <div class="feedbackContent">{{feedbackDetail.studentName}}</div>
+         </div>
+          <div class="content">
+           <div class="title">用户ID：</div>
+           <div class="feedbackContent">{{feedbackDetail.studentId}}</div>
+         </div>
+          <div class="content">
+           <div class="title">反馈状态:</div>
+           <div class="feedbackContent">{{feedbackDetail.status}}</div>
+         </div>
+         <div class="content">
+           <div class="title">反馈内容：</div>
+           <div class="feedbackContent">{{feedbackDetail.feedbackContent}}</div>
+         </div>
+         <div class="content">
+           <div class="title">创建时间：</div>
+           <div class="feedbackContent">{{feedbackDetail.createTime}}</div>
+         </div>
+      </div>
       <div slot="footer" class="dialog-footer">
-        <!-- <el-button type="primary" @click="submitForm()">确 定</el-button> -->
         <el-button @click="cancel">关闭</el-button>
       </div>
     </el-dialog>
@@ -145,23 +154,6 @@ export default {
   name: "feedback",
   data() {
     return {
-      //  tableData: [{
-      //     date: '2016-05-02',
-      //     name: '王小虎',
-      //     address: '上海市普陀区金沙江路 1518 弄'
-      //   }, {
-      //     date: '2016-05-04',
-      //     name: '王小虎',
-      //     address: '上海市普陀区金沙江路 1517 弄'
-      //   }, {
-      //     date: '2016-05-01',
-      //     name: '王小虎',
-      //     address: '上海市普陀区金沙江路 1519 弄'
-      //   }, {
-      //     date: '2016-05-03',
-      //     name: '王小虎',
-      //     address: '上海市普陀区金沙江路 1516 弄'
-      //   }],
       // 遮罩层
       loading: true,
       // 显示搜索条件
@@ -171,8 +163,9 @@ export default {
       // 反馈表格数据
       feedbackList: [
       ],
+      feedbackDetail:{},
       // 弹出层标题
-      title: "",
+      title: "反馈详情",
       // 是否显示弹出层
       open: false,
       feedbackOptions: [{
@@ -203,26 +196,6 @@ export default {
       //修改参数
       updateParams:{
       },
-      // 表单参数
-      // form: {},
-      // 表单校验
-      // rules: {
-      //   postCode: [
-      //     { required: true, message: "用户编码不能为空", trigger: "blur" }
-      //   ],
-      //   postName: [
-      //     { required: true, message: "用户名不能为空", trigger: "blur" }
-      //   ],
-      //   feedbackStatus:[
-      //     { required: true, message: "反馈状态不能为空", trigger: "blur" }
-      //   ],
-      //   createTime:[
-      //     { required: true, message: "创建时间不能为空", trigger: "blur" }
-      //   ],
-      //   AnonymityStatus:[
-      //     { required: true, message: "匿名状态不能为空", trigger: "blur" }
-      //   ],
-      // },
       dateRange: [],
     };
   },
@@ -256,14 +229,22 @@ export default {
        listFeedback(this.addDateRange(params, this.dateRange)).then(
         response => {
           this.feedbackList = response.rows;
-          var array=this.feedbackList.map((item)=> {
+          var array=[];
+          this.feedbackList.forEach((item)=> {
           if( item.status==0){
             item.status='未处理';
+            item.feedbackContent= item.feedbackContent.slice(0,3)+'...';
+            array.push(item);
           }
-          else{
-             item.status='已处理';
-          }
-          return item;
+            // if( item.status==0){
+            //   item.status='未处理';
+            // }
+            // else{
+            //   item.status='已处理';
+            // }
+            // item.feedbackContent= item.feedbackContent.slice(0,3)+'...';
+            // console.log("length"+item.feedbackContent.length)
+            //  array.push(item);
            })
            this.feedbackList=array;
           this.total = response.total;
@@ -292,6 +273,13 @@ export default {
     handleDetail(row){
       this.open = true;
       feedbackDetail(row.feedbackId).then(response => {
+         this.feedbackDetail=response.data;
+          if( this.feedbackDetail.status==0){
+            this.feedbackDetail.status='未处理';
+          }
+          else{
+            this.feedbackDetail.status='已处理';
+          }
          this.open = true;
         // this.msgSuccess("处理成功");
         // this.open = false;
@@ -309,17 +297,17 @@ export default {
       // this.reset();
     },
     // 表单重置
-    reset() {
-      // this.form = {
-      //   postId: undefined,
-      //   postCode: undefined,
-      //   postName: undefined,
-      //   postSort: 0,
-      //   status: "0",
-      //   remark: undefined
-      // };
-      // this.resetForm("form");
-    },
+    // reset() {
+    //   this.form = {
+    //     postId: undefined,
+    //     postCode: undefined,
+    //     postName: undefined,
+    //     postSort: 0,
+    //     status: "0",
+    //     remark: undefined
+    //   };
+    //   this.resetForm("form");
+    // },
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
@@ -327,6 +315,7 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.dateRange = [];
       this.resetForm("queryForm");
       this.handleQuery();
     },
@@ -371,3 +360,41 @@ export default {
   }
 };
 </script>
+<style scoped>
+ .img{
+  display: flex;
+  flex-wrap: wrap;
+  /* justify-content: space-between; */
+  display: -webkit-flex;
+  flex-direction: row;
+  /* width:400px; */
+ }
+ img{
+   margin-left:12px;
+   margin-top:15px;
+   width:100px;
+ }
+ .title{
+   /* width:200px; */
+   font-size:16px;
+   font-weight:100px;
+   margin-left:20px;
+ }
+ .content1{
+   margin-top:25px;
+   flex-wrap: wrap;
+   display:flex;
+ }
+ .content{
+   margin-top:10px;
+   flex-wrap: wrap;
+   display:flex;
+   /* flex-wrap: wrap;
+   flex-direction: row;
+   margin-left:-200px; */
+ }
+ .feedbackContent{
+   width:150px;
+   margin-right:150px;
+ }
+</style>
