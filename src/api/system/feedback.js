@@ -17,6 +17,13 @@ export function updateFeedback(query) {
     params: query
   })
 }
+//查看反馈详情
+export function feedbackDetail(feedbackId) {
+  return request({
+    url: '/system/feedback/'+feedbackId,
+    method: 'get'
+  })
+}
 
 // 查询岗位详细
 // export function getPost(postId) {

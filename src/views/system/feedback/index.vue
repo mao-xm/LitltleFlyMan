@@ -95,7 +95,7 @@
                 size="mini"
                 type="text"
                 icon="el-icon-more"
-                @click="handleDelete(scope.row)"
+                @click="handleDetail(scope.row)"
               >详情</el-button><!--v-hasPermi="['system:post:remove']" -->
             </template>
           </el-table-column>
@@ -109,7 +109,6 @@
     />
      <!-- 添加或修改参数配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-       <span>确定处理反馈状态吗?</span>
       <!-- <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="字典名称" prop="dictName">
           <el-input v-model="form.dictName" placeholder="请输入字典名称" />
@@ -131,8 +130,8 @@
         </el-form-item>
       </el-form> -->
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm()">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
+        <!-- <el-button type="primary" @click="submitForm()">确 定</el-button> -->
+        <el-button @click="cancel">关闭</el-button>
       </div>
     </el-dialog>
 
@@ -140,7 +139,7 @@
 </template>
 
 <script>
-import { listFeedback,updateFeedback} from "@/api/system/feedback";
+import { listFeedback,updateFeedback,feedbackDetail} from "@/api/system/feedback";
 
 export default {
   name: "feedback",
@@ -272,21 +271,33 @@ export default {
         }
       );
     },
-    /** 修改按钮操作 */
+    /** 修改反馈状态操作 */
     handleUpdate(row) {
-      this.open = true;
-      this.title = "提示";
       this.updateParams.feedbackId=row.feedbackId;
       this.updateParams.status='1';
-      // console.log(row.feedbackId);
-      //  console.log(row.status);
-      // this.reset();
-      // const dictId = row.dictId || this.ids
-      // getType(dictId).then(response => {
-        // this.form = response.data;
-        // this.open = true;
-        // this.title = "修改字典类型";
-      // });
+      var Params= this.updateParams;
+      this.$confirm('是否确认处理反馈状态?', "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(function() {
+          console.log("修改进入");
+          return  updateFeedback(Params);
+        }).then(() => {
+           this.msgSuccess("处理成功");
+           this.getList();
+        })
+    },
+    /** 查看反馈详情操作 */
+    handleDetail(row){
+      this.open = true;
+      feedbackDetail(row.feedbackId).then(response => {
+         this.open = true;
+        // this.msgSuccess("处理成功");
+        // this.open = false;
+        // this.getList();
+      });
+      
     },
     // 岗位状态字典翻译
     statusFormat(row, column) {
@@ -295,7 +306,7 @@ export default {
     // 取消按钮
     cancel() {
       this.open = false;
-      this.reset();
+      // this.reset();
     },
     // 表单重置
     reset() {
@@ -333,11 +344,11 @@ export default {
       //  var params={
       //     feedbackId:
       //  };
-      updateFeedback(this.updateParams).then(response => {
-        this.msgSuccess("处理成功");
-        this.open = false;
-        this.getList();
-      });
+      // updateFeedback(this.updateParams).then(response => {
+      //   this.msgSuccess("处理成功");
+      //   this.open = false;
+      //   this.getList();
+      // });
       // this.$refs["form"].validate(valid => {
       //   if (valid) {
       //     if (this.form.postId != undefined) {
