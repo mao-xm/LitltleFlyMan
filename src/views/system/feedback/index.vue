@@ -23,9 +23,9 @@
         <el-select v-model="queryParams.status" placeholder="反馈状态" clearable size="small">
           <el-option
             v-for="dict in feedbackOptions"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
           />
         </el-select>
       </el-form-item>
@@ -45,9 +45,9 @@
         <el-select v-model="queryParams.anonymityFlag" placeholder="匿名状态" clearable size="small">
           <el-option
             v-for="dict in anonymityOptions"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
           />
         </el-select>
       </el-form-item>
@@ -75,10 +75,17 @@
               prop="feedbackContent"
               label="内容">
             </el-table-column>
-            <el-table-column
+            <el-table-column label="反馈状态" align="center">
+              <template slot-scope="scope">
+                <div v-for="dict in feedbackOptions">
+                  <span v-if= "dict.dictValue === scope.row.status">{{dict.dictLabel}}</span>
+                </div>
+              </template>
+             </el-table-column>
+            <!-- <el-table-column
               prop="status"
               label="反馈状态">
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button
@@ -103,7 +110,7 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-     <!-- 添加或修改参数配置对话框 -->
+     <!-- 反馈详情对话框 -->
      <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <div id="detail" width="500px" v-for="(item,index) in (feedbackDetail.sysFeedbackMedias)" :key="index">
          <div class="img" >
@@ -168,21 +175,7 @@ export default {
       title: "反馈详情",
       // 是否显示弹出层
       open: false,
-      feedbackOptions: [{
-          value: '已处理',
-          label: '已处理'
-        }, {
-          value: '未处理',
-          label: '未处理'
-        }],
-      anonymityOptions:[{
-          value: '匿名',
-          label: '匿名'
-        }, {
-          value: '不匿名',
-          label: '不匿名'
-        }
-
+      feedbackOptions: [
       ],
       // 查询参数
       queryParams: {
@@ -197,54 +190,32 @@ export default {
       updateParams:{
       },
       dateRange: [],
+      anonymityOptions:[]
     };
   },
   created() {
     this.getList();
+     this.getDicts("sys_feedback_type").then(response => {
+      this.feedbackOptions = response.data;
+    });
+    this.getDicts("sys_anonymity_type").then(response => {
+      this.anonymityOptions = response.data;
+    });
   },
   methods: {
     /** 查询反馈列表 */
     getList() {
       this.loading = true;
-       var params={
-          pageNum: 1,
-          pageSize: 10,
-          studentId:this.queryParams.studentId,
-          studentName:this.queryParams.studentName,
-          status: undefined,
-          anonymityFlag:undefined
-       };
-      if(this.queryParams.status=='未处理'){
-        params.status='0';
-      }
-      if(this.queryParams.anonymityFlag=='不匿名'){
-        params.anonymityFlag=0;
-      }
-      if(this.queryParams.status=='已处理'){
-        params.status='1';
-      }
-      if(this.queryParams.anonymityFlag=='匿名'){
-        params.anonymityFlag=1;
-      }
-       listFeedback(this.addDateRange(params, this.dateRange)).then(
+       listFeedback(this.addDateRange(this.queryParams, this.dateRange)).then(
         response => {
           this.feedbackList = response.rows;
           var array=[];
           this.feedbackList.forEach((item)=> {
           if( item.status==0){
-            item.status='未处理';
+            // item.status='未处理';
             item.feedbackContent= item.feedbackContent.slice(0,3)+'...';
             array.push(item);
           }
-            // if( item.status==0){
-            //   item.status='未处理';
-            // }
-            // else{
-            //   item.status='已处理';
-            // }
-            // item.feedbackContent= item.feedbackContent.slice(0,3)+'...';
-            // console.log("length"+item.feedbackContent.length)
-            //  array.push(item);
            })
            this.feedbackList=array;
           this.total = response.total;
@@ -274,16 +245,7 @@ export default {
       this.open = true;
       feedbackDetail(row.feedbackId).then(response => {
          this.feedbackDetail=response.data;
-          if( this.feedbackDetail.status==0){
-            this.feedbackDetail.status='未处理';
-          }
-          else{
-            this.feedbackDetail.status='已处理';
-          }
          this.open = true;
-        // this.msgSuccess("处理成功");
-        // this.open = false;
-        // this.getList();
       });
       
     },
@@ -296,18 +258,6 @@ export default {
       this.open = false;
       // this.reset();
     },
-    // 表单重置
-    // reset() {
-    //   this.form = {
-    //     postId: undefined,
-    //     postCode: undefined,
-    //     postName: undefined,
-    //     postSort: 0,
-    //     status: "0",
-    //     remark: undefined
-    //   };
-    //   this.resetForm("form");
-    // },
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
@@ -320,42 +270,6 @@ export default {
       this.handleQuery();
     },
    
-    /** 提交按钮 */
-    submitForm: function() {
-      // if(this.updateParams.status=='未处理'){
-      //   this.updateParams.status='0';
-      // }
-      // if(this.queryParams.status=='已处理'){
-      // this.queryParams.status='1';
-      // }
-      // console.log(typeof this.updateParams.status);
-      //  console.log(typeof this.updateParams.feedbackId);
-      //  var params={
-      //     feedbackId:
-      //  };
-      // updateFeedback(this.updateParams).then(response => {
-      //   this.msgSuccess("处理成功");
-      //   this.open = false;
-      //   this.getList();
-      // });
-      // this.$refs["form"].validate(valid => {
-      //   if (valid) {
-      //     if (this.form.postId != undefined) {
-      //       updatePost(this.form).then(response => {
-      //         this.msgSuccess("修改成功");
-      //         this.open = false;
-      //         this.getList();
-      //       });
-      //     } else {
-      //       addPost(this.form).then(response => {
-      //         this.msgSuccess("新增成功");
-      //         this.open = false;
-      //         this.getList();
-      //       });
-      //     }
-      //   }
-      // });
-    },
    
   }
 };
