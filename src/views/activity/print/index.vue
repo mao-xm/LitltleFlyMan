@@ -82,7 +82,7 @@
             v-for="dict in paperOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
-            :value="dict.dictValue"
+            :value="dict.dictLabel"
           />
         </el-select>
       </el-form-item>
@@ -185,15 +185,14 @@
            icon="el-icon-more"
             @click="handleDetail(scope.row)"
             v-hasPermi="['activity:print:edit']"
+            v-if=""
           >详情</el-button>
          <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            v-hasPermi="['activity:print:edit']"
-          >修改</el-button>
-        </template>
+            @click="handleUpdate(scope.row)" v-if="scope.row.flag">{{updateValue}}</el-button>
+         </template>
       </el-table-column>
     </el-table>
     
@@ -204,80 +203,108 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-     <!-- 打印详情对话框 -->
-     <el-dialog title="打印详情" :visible.sync="open1" width="500px" append-to-body >
-     <div id="detail" width="500px">   
-         <div class="content1">
-           <div class="title">打印Id:</div>
-           <div class="printContent">{{printDetail.printId}}</div>
-         </div>
-          <div class="content">
-           <div class="title">学生Id：</div>
-           <div class="printContent">{{printDetail.studentId}}</div>
-         </div>
-         <div class="content">
-           <div class="title">学生姓名：</div>
-           <div class="printContent">{{printDetail.studentName}}</div>
-         </div>
-          <div class="content">
-           <div class="title">文件名:</div>
-           <div class="printContent">{{printDetail.fileName}}</div>
-         </div>
-          <div class="content">
-           <div class="title">文件url:</div>
-           <div class="printContent">{{printDetail.fileUrl}}</div>
-         </div>
-         <div class="content">
-           <div class="title">打印员工Id：</div>
-           <div class="printContent">{{printDetail.userPrintId}}</div>
-         </div>
-         <div class="content">
-           <div class="title">派送员工Id：</div>
-           <div class="printContent">{{printDetail.userDeliveryId}}</div>
-         </div>
-          <div class="content">
-           <div class="title"> 打印数量：</div>
-           <div class="printContent">{{printDetail.printNumber}}</div>
-         </div>
-        <div class="content"  >
-            <div class="title"> 单双面标志：</div>
-            <div v-for="dict in bothSideOptions" v-if= "dict.dictValue ==printDetail.bothSideFlag" class="printContent">{{dict.dictLabel}}</div>
-        </div>
-         <div class="content">
-            <div class="title"> 彩印标志：</div>
-            <div v-if= "dict.dictValue ==printDetail.colorFlag" v-for="dict in colorOptions" class="printContent">{{dict.dictLabel}}</div>
-        </div>
-        <div class="content">
-            <div class="title"> 封胶标志：</div>
-              <div v-if= "dict.dictValue ==printDetail.sealingFlag" v-for="dict in sealingOptions" class="printContent">{{dict.dictLabel}}</div>
-        </div>
-        <div class="content">
-            <div class="title"> 纸张大小：</div>
-              <div v-if= "dict.dictLabel ==printDetail.paperSize" v-for="dict in paperOptions" class="printContent">{{dict.dictLabel}}</div>
-        </div>
-          <div class="content">
-           <div class="title"> 学生备注：</div>
-           <div class="printContent">{{printDetail.studentRemark}}</div>
-         </div>
-         <div class="content">
-            <div class="title"> 打印订单状态：</div>
-            <div v-if= "dict.dictValue ==printDetail.status"  v-for="dict in printOptions" class="printContent">{{dict.dictLabel}}</div>  
-        </div>
-           <div class="content">
-           <div class="title"> 配送地址:</div>
-           <div class="printContent">{{printDetail.address}}</div>
-         </div>
-          <div class="content">
-            <div class="title"> 封面颜色：</div>
-              <div v-for="dict in coverColorOptions" class="printContent" v-if= "dict.dictValue ==printDetail.coverColor">{{dict.dictLabel}}</div>
-        </div>
-          <div class="content">
-           <div class="title"> 金额 ：</div>
-           <div class="printContent">{{printDetail.fee}}</div>
-         </div>
-      </div>
+    <el-dialog title="打印详情" :visible.sync="open1" width="700px" append-to-body>
+      <div class="detail" v-if="printDetailFlag">学生信息：</div>
+      <div class="detail2" v-if="!printDetailFlag">学生暂无信息：</div>
+      <el-form ref="form" :model="printDetail" label-width="100px" size="mini" class="content" v-if="printDetailFlag"> 
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="学生id：" label-width="120px">{{ (printDetail.studentId!=null?printDetail.studentId:'暂无数据') }}</el-form-item>
+            <el-form-item label="学生姓名：" label-width="120px">{{ (printDetail.studentName!=null?printDetail.studentName:'暂无数据') }}</el-form-item>
+          </el-col>
+           <el-col :span="12">
+            <el-form-item label="学生备注：" label-width="120px">{{(printDetail.remark!=null?printDetail.remark:'暂无数据') }}</el-form-item>
+            <el-form-item label="学生地址：" label-width="120px">{{ (printDetail.address!=null?printDetail.address:'暂无数据')}}</el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="单双面标志：" label-width="120px">
+              <div v-if="printDetail.bothSideFlag == 0">单页</div>
+              <div v-else-if="printDetail.status == 1">双页</div>
+               <div v-else>暂无数据</div>
+            </el-form-item>
+            <el-form-item label="封胶标志：" label-width="120px">
+              <div v-if="printDetail.sealingFlag == 0">非封胶</div>
+              <div v-else-if="printDetail.sealingFlag == 1">封胶</div>
+               <div v-else>暂无数据</div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="订单状态：" label-width="120px">
+              <div v-if="printDetail.status == 0">下单</div>
+              <div v-else-if="printDetail.status == 1">支付</div>
+              <div v-else-if="printDetail.status == 2">接单</div>
+              <div v-else-if="printDetail.status == 3">派送</div>
+               <div v-else-if="printDetail.status == 4">收货</div>
+               <div v-else>暂无数据</div>
+            </el-form-item>
+            <el-form-item label="彩印标志：" label-width="120px">
+              <div v-if="printDetail.colorFlag == 0">黑白</div>
+              <div v-else-if="printDetail.colorFlag == 1">彩印</div>
+               <div v-else>暂无数据</div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="封面颜色：" label-width="120px">
+              <div v-if="printDetail.coverColor == 0">蓝色</div>
+              <div v-else>暂无数据</div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="学生备注：" label-width="120px">{{(printDetail.fee!=null?printDetail.fee:'暂无数据')}}</el-form-item>
+          </el-col>
+        </el-row>
+      </el-form> 
+       <div class="detail1" v-if="deliveryFlag">派送人员信息：</div>
+       <div class="detail2" v-if="!deliveryFlag">派送人员暂无信息：</div>
+      <el-form ref="form" :model="userDelivery" label-width="100px" size="mini" class="content" v-if="deliveryFlag"> 
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="派送人员id：" label-width="120px">{{ (userDelivery.userId!=null?userDelivery.userId:'暂无数据') }}</el-form-item>
+            <el-form-item label="派送人员姓名：" label-width="120px">{{ (userDelivery.userName!=null?userDelivery.userName:'暂无数据') }}</el-form-item>
+          </el-col>
+         <el-col :span="12">
+            <el-form-item label="派送人员电话：" label-width="120px">{{(userDelivery.phonenumber!=null?userDelivery.phonenumber:'暂无数据')}}</el-form-item>
+            <el-form-item label="派送人员邮箱：" label-width="120px">{{(userDelivery.email!=null?userDelivery.email:'暂无数据') }}</el-form-item>
+          </el-col>
+            <el-col :span="12">
+            <el-form-item label="派送人员性别：" label-width="120px">
+              <div v-if="userDelivery.sex== 0">男</div>
+              <div v-else-if="userDelivery.sex == 1">女</div>
+              <div v-else>暂无数据</div>
+            </el-form-item>
+           </el-col>
+           <el-col :span="12">
+            <el-form-item label="派送人员备注：" label-width="120px">{{(userDelivery.remark!=null?userDelivery.remark:'暂无数据') }}</el-form-item>
+            </el-col>
+        </el-row> 
+      </el-form>
+     
+       <div class="detail1" v-if="printFlag">打印人员信息：</div>
+       <div class="detail2" v-if="!printFlag">打印人员暂无信息：</div>
+      <el-form ref="form"  :model="userPrint" label-width="100px" size="mini" class="content" v-if="printFlag"> 
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="打印人员id：" label-width="120px">{{(userPrint.userId!=null?userPrint.userId:'暂无数据') }}</el-form-item>
+            <el-form-item label="打印人员姓名：" label-width="120px">{{(userPrint.userName!=null?userPrint.userName:'暂无数据') }}</el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="打印人员电话：" label-width="120px">{{ (userPrint.phonenumber!=null?userPrint.phonenumber:'暂无数据')}}</el-form-item>
+            <el-form-item label="打印人员邮箱：" label-width="120px">{{ (userPrint.email!=null?userPrint.email:'暂无数据')}}</el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="打印人员性别：" label-width="120px">
+              <div v-if="userPrint.sex== 0">男</div>
+              <div v-else-if="userPrint.sex == 1">女</div>
+                <div v-else>暂无数据</div>
+            </el-form-item>
+          </el-col>
+           <el-col :span="12">
+            <el-form-item label="打印人员备注：" label-width="120px">{{(userPrint.remark!=null?userPrint.remark:'暂无数据')}}</el-form-item>
+          </el-col>
+        </el-row>
+      </el-form> 
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel1">关闭</el-button>
+        <el-button @click="open1 = false">关 闭</el-button>
       </div>
     </el-dialog>
 
@@ -329,7 +356,11 @@ export default {
         addressId: null,
         coverColor: null,
         fee: null,
+       
       },
+       printDetailFlag:true,
+        deliveryFlag:true,
+        printFlag:true,
       // 表单参数
       form: {},
       // 表单校验
@@ -347,6 +378,9 @@ export default {
           { required: true, message: "配送地址id不能为空", trigger: "blur" }
         ],
       },
+        options:{
+          value1:'下单'
+        },
         printOptions: [],
         bothSideOptions: [],
         colorOptions: [],
@@ -355,8 +389,11 @@ export default {
         coverColorOptions: [],
         printDetail:{},
          //修改参数
-        updateParams:{
-        },
+        updateParams:{},
+        userDelivery:{},
+        userPrint:{},
+        updateValue:''
+        
         
     };
   },
@@ -392,6 +429,18 @@ export default {
         res.forEach((item)=>{
           // item.fileUrl= item.fileUrl.slice(0,4)+'...';
           item.fileName= item.fileName.slice(0,3)+'...';
+          if(item.status=='1'||item.status=='2'){
+            item.flag=true;
+            if(item.status=='1'){
+              this.updateValue='接单';
+            }
+            else{
+              this.updateValue='派送';
+            }
+          }
+          else{
+            item.flag=false;
+          }
           arr.push(item);
         })
         this.printList = arr;
@@ -458,8 +507,8 @@ export default {
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-       this.updateParams.feedbackId=row.feedbackId;
-      if(row.status=='支付'){
+       this.updateParams.printId=row.printId;
+      if(row.status=='1'){
          this.updateParams.status='2';
          var Params= this.updateParams;
           this.$confirm('是否确认修改为接单状态?', "提示", {
@@ -474,7 +523,7 @@ export default {
         })
          
       }
-      if(row.status=='接单'){
+      if(row.status=='2'){
          this.updateParams.status='3';
          var Params= this.updateParams;
           this.$confirm('是否确认修改为派送状态?', "提示", {
@@ -489,44 +538,45 @@ export default {
         })
         
       }
-      this.$message({
-          message: '当前状态不可修改',
-          type: 'warning'
-        });
-      
-      
-     
     },
      handleDetail(row) {
       getPrint(row.printId).then(response => {
          this.printDetail=response.data;
+         this.userDelivery=this.printDetail.userDelivery;
+         this.userPrint=this.printDetail.userPrint;
          this.open1 = true;
+          if(this.printDetail==null){
+            console.log("printDetail==null");
+           this.printDetailFlag=false;
+         }
+         if(this.userDelivery==null){
+           this.deliveryFlag=false;
+         }
+         if(this.userPrint==null){
+           this.printFlag=false;
+         }
       });
     },
   }
 };
 </script>
 <style scoped>
-.title{
-   font-size:16px;
-   font-weight:100px;
-   /* margin-left:20px; */
- }
- .content1{
-   margin-top:25px;
-   flex-wrap: wrap;
-   display:flex;
- }
- .content{
-   margin-top:20px;
-   flex-wrap: wrap;
-   display:flex;
- }
- .printContent{
-   font-size:16px;
-   width:330px;
-   margin-left:15px;
-   /* margin-right:50px; */
-   padding-top:1px;
- }
+.detail{
+  font-size:16px;
+  color:blue;
+  margin-left:10px;
+}
+.content{
+  padding-top:10px;
+}
+.detail1{
+  font-size:16px;
+  padding-top:20px;
+  color:blue;
+}
+.detail2{
+  font-size:16px;
+  padding-top:20px;
+  color:red;
+}
 </style>

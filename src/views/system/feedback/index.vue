@@ -111,7 +111,7 @@
       @pagination="getList"
     />
      <!-- 反馈详情对话框 -->
-     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+     <!-- <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <div id="detail" width="500px" v-for="(item,index) in (feedbackDetail.sysFeedbackMedias)" :key="index">
          <div class="img" >
            <img :src="item.feedbackMediaUrl" width="100px">
@@ -148,9 +148,105 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel">关闭</el-button>
+      </div> 
+    </el-dialog>-->
+     <el-dialog title="反馈详情" :visible.sync="open" width="700px" append-to-body>
+     <div class="detail2" v-if="!feedbackDetailFlag">打印人员暂无信息：</div>
+      <el-form ref="form" :model="feedbackDetail" label-width="100px" size="mini" class="content"  v-if="feedbackDetailFlag"> 
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="学生id：" label-width="120px">{{(feedbackDetail.studentId!=null?feedbackDetail.studentId:'暂无数据')}}</el-form-item>
+            <el-form-item label="学生姓名：" label-width="120px">{{(feedbackDetail.studentName!=null?feedbackDetail.studentName:'暂无数据') }}</el-form-item>
+          </el-col>
+           <el-col :span="12">
+            <el-form-item label="学生备注：" label-width="120px">{{(feedbackDetail.remark!=null?feedbackDetail.remark:'暂无数据') }}</el-form-item>
+            <el-form-item label="反馈内容：" label-width="120px">{{(feedbackDetail.feedbackContent!=null?feedbackDetail.feedbackContent:'暂无数据') }}</el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="反馈状态：" label-width="120px">
+              <div v-if="feedbackDetail.status == 0">正常</div>
+              <div v-else-if="feedbackDetail.status == 1">失败</div>
+              <div v-else>暂无数据</div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="反馈时间：" label-width="120px">{{ (feedbackDetail.createTime!=null?feedbackDetail.createTime:'暂无数据') }}</el-form-item>
+          </el-col>
+          <el-col v-if="isUrl">
+            <el-form-item label="反馈图片：" label-width="120px" > 
+            </el-form-item>
+          </el-col>
+          <el-col v-if="!isUrl">
+            <el-form-item label="反馈图片：" label-width="120px" > 
+            暂无反馈图片
+            </el-form-item>
+          </el-col>
+          <el-col :span="6" v-for="(item,index) in (feedbackDetail.sysFeedbackMedias)" :key="index">
+                 <el-form-item > <img :src="item.feedbackMediaUrl" width="100px">
+                 </el-form-item>
+          </el-col>
+           <!-- <el-col :span="6" v-for="(item,index) in (feedbackDetail.sysFeedbackMedias)" :key="index">
+                 <el-form-item > <img :src="item.feedbackMediaUrl" width="100px">
+                 </el-form-item>
+          </el-col>
+           <el-col :span="6" v-for="(item,index) in (feedbackDetail.sysFeedbackMedias)" :key="index">
+                 <el-form-item > <img :src="item.feedbackMediaUrl" width="100px">
+                 </el-form-item>
+          </el-col>
+           <el-col :span="6" v-for="(item,index) in (feedbackDetail.sysFeedbackMedias)" :key="index">
+                 <el-form-item > <img :src="item.feedbackMediaUrl" width="100px">
+                 </el-form-item>
+          </el-col>
+           <el-col :span="6" v-for="(item,index) in (feedbackDetail.sysFeedbackMedias)" :key="index">
+                 <el-form-item > <img :src="item.feedbackMediaUrl" width="100px">
+                 </el-form-item>
+          </el-col>
+           <el-col :span="6" v-for="(item,index) in (feedbackDetail.sysFeedbackMedias)" :key="index">
+                 <el-form-item> <img :src="item.feedbackMediaUrl" width="100px">
+                 </el-form-item>
+          </el-col>
+           <el-col :span="6" v-for="(item,index) in (feedbackDetail.sysFeedbackMedias)" :key="index">
+                 <el-form-item > <img :src="item.feedbackMediaUrl" width="100px">
+                 </el-form-item>
+          </el-col>
+          <el-col :span="6" v-for="(item,index) in (feedbackDetail.sysFeedbackMedias)" :key="index">
+                 <el-form-item > <img :src="item.feedbackMediaUrl" width="100px">
+                 </el-form-item>
+          </el-col> -->
+          <!-- <el-col :span="4" v-for="(item,index) in (feedbackDetail.sysFeedbackMedias)" :key="index">
+            <el-form-item  label-width="120px"> <img :src="item.feedbackMediaUrl" width="100px"></el-form-item>
+          </el-col>
+           <el-col :span="4" v-for="(item,index) in (feedbackDetail.sysFeedbackMedias)" :key="index">
+            <el-form-item  label-width="120px"> <img :src="item.feedbackMediaUrl" width="100px"></el-form-item>
+          </el-col>
+           <el-col :span="4" v-for="(item,index) in (feedbackDetail.sysFeedbackMedias)" :key="index">
+            <el-form-item  label-width="120px"> <img :src="item.feedbackMediaUrl" width="100px"></el-form-item>
+          </el-col>
+           <el-col :span="4" v-for="(item,index) in (feedbackDetail.sysFeedbackMedias)" :key="index">
+            <el-form-item  label-width="120px"> <img :src="item.feedbackMediaUrl" width="100px"></el-form-item>
+          </el-col>
+           <el-col :span="4" v-for="(item,index) in (feedbackDetail.sysFeedbackMedias)" :key="index">
+            <el-form-item  label-width="120px"> <img :src="item.feedbackMediaUrl" width="100px"></el-form-item>
+          </el-col> -->
+           <!-- <div class="img" v-for="(item,index) in (feedbackDetail.sysFeedbackMedias)" :key="index" >
+           <img :src="item.feedbackMediaUrl" width="100px">
+           <img :src="item.feedbackMediaUrl" width="100px">
+           <img :src="item.feedbackMediaUrl" width="100px" >
+           <img :src="item.feedbackMediaUrl" width="100px">
+           <img :src="item.feedbackMediaUrl" width="100px">
+           <img :src="item.feedbackMediaUrl" width="100px" >
+         </div> -->
+        </el-row>
+      </el-form> 
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="open = false">关 闭</el-button>
       </div>
+      <!-- <div id="detail" width="500px" v-for="(item,index) in (feedbackDetail.sysFeedbackMedias)" :key="index"> -->
+        
+    <!-- </div> -->
     </el-dialog>
-
+    
+    </div>
   </div>
 </template>
 
@@ -190,7 +286,9 @@ export default {
       updateParams:{
       },
       dateRange: [],
-      anonymityOptions:[]
+      anonymityOptions:[],
+      feedbackDetailFlag:true,
+      isUrl:true
     };
   },
   created() {
@@ -246,6 +344,12 @@ export default {
       feedbackDetail(row.feedbackId).then(response => {
          this.feedbackDetail=response.data;
          this.open = true;
+          if(this.feedbackDetail==null){
+           this.feedbackDetailFlag=false;
+         }
+         if(this.feedbackDetail.sysFeedbackMedias==null){
+           this.isUrl=false;
+         }
       });
       
     },
@@ -275,40 +379,47 @@ export default {
 };
 </script>
 <style scoped>
- .img{
+ /* .img{
   display: flex;
   flex-wrap: wrap;
-  /* justify-content: space-between; */
   display: -webkit-flex;
   flex-direction: row;
-  /* width:400px; */
- }
- img{
+ } */
+ /* img{
    margin-left:12px;
    margin-top:15px;
    width:100px;
+ } */
+ img{
+   margin-left:-60px;
+   /* margin-top:15px;
+   width:100px; */
  }
- .title{
-   /* width:200px; */
+ /* .title{
    font-size:16px;
    font-weight:100px;
    margin-left:20px;
- }
- .content1{
+ } */
+ /* .content1{
    margin-top:25px;
    flex-wrap: wrap;
    display:flex;
- }
- .content{
+ } */
+ /* .content{
    margin-top:10px;
    flex-wrap: wrap;
-   display:flex;
+   display:flex; */
    /* flex-wrap: wrap;
    flex-direction: row;
    margin-left:-200px; */
- }
+ /* }
  .feedbackContent{
    width:150px;
    margin-right:150px;
- }
+ } */
+ .detail2{
+  font-size:16px;
+  padding-top:20px;
+  color:red;
+}
 </style>

@@ -124,49 +124,8 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
-
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['activity:laundry:add']"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-          v-hasPermi="['activity:laundry:edit']"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['activity:laundry:remove']"
-        >删除</el-button>
-      </el-col>
-      <!-- <el-col :span="1.5">
-        <el-button
-          type="warning"
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['activity:laundry:export']"
-        >导出</el-button>
-      </el-col> -->
 	  <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
-
     <el-table v-loading="loading" :data="laundryList" @selection-change="handleSelectionChange">
       <!-- <el-table-column type="selection" width="55" align="center" /> -->
       <el-table-column label="洗衣订单Id" align="center" prop="laundryId" />
@@ -203,13 +162,19 @@
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button
+        <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)" v-if="scope.row.flag">{{updateValue}}</el-button>
+          <!-- <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
+            v-if=""
             v-hasPermi="['activity:laundry:edit']"
-          >修改</el-button>
+          >修改</el-button> -->
           <el-button
             size="mini"
             type="text"
@@ -229,79 +194,93 @@
       @pagination="getList"
     />
      <!-- 洗衣详情对话框 -->
-     <el-dialog title="洗衣详情" :visible.sync="open1" width="500px" append-to-body >
-     <div id="detail" width="500px">   
-         <div class="content1">
-           <div class="title">洗衣Id:</div>
-           <div class="washContent">{{laundryDetail.laundryId}}</div>
-         </div>
-          <div class="content">
-           <div class="title">学生Id：</div>
-           <div class="washContent">{{laundryDetail.studentId}}</div>
-         </div>
-          <div class="content">
-           <div class="title">学生姓名：</div>
-           <div class="washContent">{{laundryDetail.studentName}}</div>
-         </div>
-          <div class="content">
-           <div class="title">学生地址:</div>
-           <div class="washContent">{{laundryDetail.address}}</div>
-         </div>
-          <!--<div class="content">
-           <div class="title">文件url:</div>
-           <div class="printContent">{{printDetail.fileUrl}}</div>
-         </div>
-         <div class="content">
-           <div class="title">打印员工Id：</div>
-           <div class="printContent">{{printDetail.userPrintId}}</div>
-         </div>
-         <div class="content">
-           <div class="title">派送员工Id：</div>
-           <div class="printContent">{{printDetail.userDeliveryId}}</div>
-         </div>
-          <div class="content">
-           <div class="title"> 打印数量：</div>
-           <div class="printContent">{{printDetail.printNumber}}</div>
-         </div>
-        <div class="content"  >
-            <div class="title"> 单双面标志：</div>
-            <div v-for="dict in bothSideOptions" v-if= "dict.dictValue ==printDetail.bothSideFlag" class="printContent">{{dict.dictLabel}}</div>
-        </div>
-         <div class="content">
-            <div class="title"> 彩印标志：</div>
-            <div v-if= "dict.dictValue ==printDetail.colorFlag" v-for="dict in colorOptions" class="printContent">{{dict.dictLabel}}</div>
-        </div>
-        <div class="content">
-            <div class="title"> 封胶标志：</div>
-              <div v-if= "dict.dictValue ==printDetail.sealingFlag" v-for="dict in sealingOptions" class="printContent">{{dict.dictLabel}}</div>
-        </div>
-        <div class="content">
-            <div class="title"> 纸张大小：</div>
-              <div v-if= "dict.dictLabel ==printDetail.paperSize" v-for="dict in paperOptions" class="printContent">{{dict.dictLabel}}</div>
-        </div>
-          <div class="content">
-           <div class="title"> 学生备注：</div>
-           <div class="printContent">{{printDetail.studentRemark}}</div>
-         </div>
-         <div class="content">
-            <div class="title"> 打印订单状态：</div>
-            <div v-if= "dict.dictValue ==printDetail.status"  v-for="dict in printOptions" class="printContent">{{dict.dictLabel}}</div>  
-        </div>
-           <div class="content">
-           <div class="title"> 配送地址:</div>
-           <div class="printContent">{{printDetail.address}}</div>
-         </div>
-          <div class="content">
-            <div class="title"> 封面颜色：</div>
-              <div v-for="dict in coverColorOptions" class="printContent" v-if= "dict.dictValue ==printDetail.coverColor">{{dict.dictLabel}}</div>
-        </div>
-          <div class="content">
-           <div class="title"> 金额 ：</div>
-           <div class="printContent">{{printDetail.fee}}</div>
-         </div>-->
-      </div>
+     <el-dialog title="洗衣详情" :visible.sync="open1" width="700px" append-to-body>
+      <div class="detail" v-if="laundryDetailFlag">学生信息：</div>
+      <div class="detail2" v-if="!laundryDetailFlag">学生暂无信息：</div>
+      <el-form ref="form" :model="laundryDetail" label-width="100px" size="mini" class="content" v-if="laundryDetailFlag"> 
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="学生id：" label-width="120px">{{ (laundryDetail.studentId!=null?laundryDetail.studentId:'暂无数据') }}</el-form-item>
+            <el-form-item label="学生姓名：" label-width="120px">{{ (laundryDetail.studentName!=null?laundryDetail.studentName:'暂无数据') }}</el-form-item>
+          </el-col>
+           <el-col :span="12">
+            <el-form-item label="学生备注：" label-width="120px">{{(laundryDetail.remark!=null?laundryDetail.remark:'暂无数据')}}</el-form-item>
+            <el-form-item label="学生地址：" label-width="120px">{{ (laundryDetail.address!=null?laundryDetail.address:'暂无数据') }}</el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="衣物类型：" label-width="120px">
+              <div v-if="laundryDetail.clothesType == 0">普通衣物</div>
+            </el-form-item>
+            <el-form-item label="清洗类型：" label-width="120px">
+              <div v-if="laundryDetail.washType == 0">正常洗</div>
+              <div v-else-if="laundryDetail.washType == 1">干洗</div>
+              <div v-else>暂无数据</div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="订单状态：" label-width="120px">
+              <div v-if="laundryDetail.status == 0">下单</div>
+              <div v-else-if="laundryDetail.status == 1">支付</div>
+              <div v-else-if="laundryDetail.status == 2">接单</div>
+              <div v-else-if="laundryDetail.status == 3">清洗</div>
+              <div v-else-if="laundryDetail.status == 4">派送</div>
+              <div v-else-if="laundryDetail.status == 4">收获</div>
+              <div v-else>暂无数据</div>
+            </el-form-item>
+            <el-form-item label="费用:" label-width="113px">{{(laundryDetail.fee!=null?laundryDetail.fee:'暂无数据')}}</el-form-item>
+          </el-col>
+        </el-row>
+      </el-form> 
+       <div class="detail1" v-if="deliveryFlag">派送人员信息：</div>
+        <div class="detail2" v-if="!deliveryFlag">派送人员暂无信息：</div>
+      <el-form ref="form" :model="userDelivery" label-width="100px" size="mini" class="content" v-if="deliveryFlag"> 
+        <el-row >
+          <el-col :span="12">
+            <el-form-item label="派送人员id：" label-width="120px">{{ (userDelivery.userId!=null?userDelivery.userId:'暂无数据') }}</el-form-item>
+            <el-form-item label="派送人员姓名：" label-width="120px">{{(userDelivery.userName!=null?userDelivery.userName:'暂无数据')}}</el-form-item>
+          </el-col>
+         <el-col :span="12">
+            <el-form-item label="派送人员电话：" label-width="120px">{{ (userDelivery.phonenumber!=null?userDelivery.phonenumber:'暂无数据') }}</el-form-item>
+            <el-form-item label="派送人员邮箱：" label-width="120px">{{ (userDelivery.email!=null?userDelivery.email:'暂无数据') }}</el-form-item>
+          </el-col>
+            <el-col :span="12">
+            <el-form-item label="派送人员性别：" label-width="120px">
+              <div v-if="userDelivery.sex== 0">男</div>
+              <div v-else-if="userDelivery.sex == 1">女</div>
+              <div v-else>暂无数据</div>
+            </el-form-item>
+           </el-col>
+           <el-col :span="12">
+            <el-form-item label="派送人员备注：" label-width="120px">{{ (userDelivery.remark!=null?userDelivery.remark:'暂无数据') }}</el-form-item>
+            </el-col>
+        </el-row> 
+      </el-form>
+       <div class="detail1" v-if="washFlag">清洗人员信息：</div>
+       <div class="detail2" v-if="!washFlag">清洗人员暂无信息：</div>
+      <el-form ref="form"  :model="userWash" label-width="100px" size="mini" class="content" v-if="washFlag"> 
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="清洗人员id：" label-width="120px">{{(userWash.userId!=null?userWash.userId:'暂无数据')}}</el-form-item>
+            <el-form-item label="清洗人员姓名：" label-width="120px">{{(userWash.userName!=null?userWash.userName:'暂无数据')}}</el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="清洗人员电话：" label-width="120px">{{(userWash.phonenumber!=null?userWash.phonenumber:'暂无数据')}}</el-form-item>
+            <el-form-item label="清洗人员邮箱：" label-width="120px">{{(userWash.email!=null?userWash.email:'暂无数据') }}</el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="清洗人员性别：" label-width="120px">
+              <div v-if="userWash.sex== 0">男</div>
+              <div v-else-if="userWash.sex == 1">女</div>
+               <div v-else>暂无数据</div>
+            </el-form-item>
+          </el-col>
+           <el-col :span="12">
+            <el-form-item label="清洗人员备注：" label-width="120px">{{(userWash.remark!=null?userWash.remark:'暂无数据')}}</el-form-item>
+          </el-col>
+        </el-row>
+      </el-form> 
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel1">关闭</el-button>
+        <el-button @click="open1 = false">关 闭</el-button>
       </div>
     </el-dialog>
   </div>
@@ -362,8 +341,14 @@ export default {
        clothesTypeOptions:[],
        washTypeOptions: [],
        statusOptions:  [],
-       laundryDetail:{}
-      
+       laundryDetail:{},
+       updateParams:{},
+       updateValue:'',
+       userDelivery:{},
+       userWash:{},
+       deliveryFlag:true,
+       laundryDetailFlag:true,
+       washFlag:true
 
     };
   },
@@ -384,7 +369,28 @@ export default {
     getList() {
       this.loading = true;
       listLaundry(this.queryParams).then(response => {
-        this.laundryList = response.rows;
+         var arr=[];
+        var res=response.rows;;
+        res.forEach((item)=>{
+          if(item.status=='1'||item.status=='2'||item.status=='3'){
+            item.flag=true;
+            if(item.status=='1'){
+              this.updateValue='接单';
+            }
+            else if(item.status=='2'){
+              this.updateValue='清洗';
+            }
+            else{
+              this.updateValue='派送';
+            }
+          }
+          else{
+            item.flag=false;
+          }
+          arr.push(item);
+        })
+        this.laundryList = arr;
+        // this.laundryList = response.rows;
         this.total = response.total;
         this.loading = false
       })},
@@ -412,7 +418,8 @@ export default {
         createTime: null,
         updateBy: null,
         updateTime: null,
-        remark: null
+        remark: null,
+        
       };
       this.resetForm("form");
     },
@@ -429,8 +436,8 @@ export default {
    
     /** 修改按钮操作 */
     handleUpdate(row) {
-       this.updateParams.feedbackId=row.feedbackId;
-      if(row.status=='支付'){
+       this.updateParams.laundryId=row.laundryId;
+      if(row.status=='1'){
          this.updateParams.status='2';
          var Params= this.updateParams;
           this.$confirm('是否确认修改为接单状态?', "提示", {
@@ -445,7 +452,7 @@ export default {
         })
          
       }
-      if(row.status=='接单'){
+      if(row.status=='2'){
          this.updateParams.status='3';
          var Params= this.updateParams;
           this.$confirm('是否确认修改为清洗状态?', "提示", {
@@ -460,7 +467,7 @@ export default {
         })
         
       }
-       if(row.status=='清洗'){
+       if(row.status=='3'){
          this.updateParams.status='4';
          var Params= this.updateParams;
           this.$confirm('是否确认修改为派送状态?', "提示", {
@@ -475,16 +482,22 @@ export default {
         })
         
       }
-      this.$message({
-          message: '当前状态不可修改',
-          type: 'warning'
-        });
-      
     },
      handleDetail(row) {
       getLaundry(row.laundryId).then(response => {
          this.laundryDetail=response.data;
-         this.open1 = true;
+         this.userDelivery=this.laundryDetail.userDelivery;
+         this.userWash=this.laundryDetail.userWash;
+         this.open1 = true; 
+         if(this.userDelivery==null){
+           this.deliveryFlag=false;
+         }
+         if(this.laundryDetail==null){
+           this.laundryDetailFlag=false;
+         }
+         if(this.userWash==null){
+           this.washFlag=false;
+         }
       });
     },
     cancel1() {
@@ -494,25 +507,22 @@ export default {
 };
 </script>
 <style scoped>
-.title{
-   font-size:16px;
-   font-weight:100px;
-   /* margin-left:20px; */
- }
- .content1{
-   margin-top:25px;
-   flex-wrap: wrap;
-   display:flex;
- }
- .content{
-   margin-top:20px;
-   flex-wrap: wrap;
-   display:flex;
- }
- .washContent{
-   font-size:16px;
-   width:330px;
-   margin-left:15px;
-   padding-top:1px;
- }
+.detail{
+  font-size:16px;
+  color:blue;
+  margin-left:10px;
+}
+.content{
+  padding-top:10px;
+}
+.detail1{
+  font-size:16px;
+  padding-top:20px;
+  color:blue;
+}
+.detail2{
+  font-size:16px;
+  padding-top:20px;
+  color:red;
+}
 </style>
