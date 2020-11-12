@@ -180,7 +180,6 @@
             type="text"
             icon="el-icon-more"
             @click="handleDetail(scope.row)"
-            v-hasPermi="['activity:laundry:remove']"
           >详情</el-button>
         </template>s
       </el-table-column>
@@ -209,12 +208,20 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="衣物类型：" label-width="120px">
-              <div v-if="laundryDetail.clothesType == 0">普通衣物</div>
+              <!-- <div v-if="laundryDetail.clothesType == 0">普通衣物</div> -->
+              <div v-for="dict in clothesTypeOptions">
+                    <span v-if= "dict.dictValue === laundryDetail.clothesType">{{dict.dictLabel}}</span>
+                    <span v-if=" laundryDetail.clothesType===null">暂无数据</span>
+              </div>
             </el-form-item>
             <el-form-item label="清洗类型：" label-width="120px">
-              <div v-if="laundryDetail.washType == 0">正常洗</div>
+              <div v-for="dict in washTypeOptions">
+                    <span v-if= "dict.dictValue === laundryDetail.washType">{{dict.dictLabel}}</span>
+                    <span v-if=" laundryDetail.washType===null">暂无数据</span>
+              </div>
+              <!-- <div v-if="laundryDetail.washType == 0">正常洗</div>
               <div v-else-if="laundryDetail.washType == 1">干洗</div>
-              <div v-else>暂无数据</div>
+              <div v-else>暂无数据</div> -->
             </el-form-item>
           </el-col>
           <el-col :span="12">

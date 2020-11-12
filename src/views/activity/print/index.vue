@@ -159,6 +159,7 @@
                 </div>
               </template>
       </el-table-column>
+      
       <!-- <el-table-column label="学生备注" align="center" prop="studentRemark" /> -->
         <el-table-column label="打印订单状态" align="center">
               <template slot-scope="scope">
@@ -192,6 +193,12 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)" v-if="scope.row.flag">{{updateValue}}</el-button>
+          <el-button
+          icon="el-icon-download"
+          type="text"
+          size="mini"
+          @click="handleDownload(scope.row.fileUrl)"
+        >下载</el-button>
          </template>
       </el-table-column>
     </el-table>
@@ -217,15 +224,26 @@
             <el-form-item label="学生地址：" label-width="120px">{{ (printDetail.address!=null?printDetail.address:'暂无数据')}}</el-form-item>
           </el-col>
           <el-col :span="12">
+            <!-- <el-form-item label="订单状态：" label-width="120px">
+              <div v-for="dict in statusOptions">
+                    <span v-if= "dict.dictValue === packageDetail.status">{{dict.dictLabel}}</span>
+                    <span v-if=" packageDetail.status===null">暂无数据</span>
+              </div>
+            </el-form-item> -->
             <el-form-item label="单双面标志：" label-width="120px">
-              <div v-if="printDetail.bothSideFlag == 0">单页</div>
+              <div v-for="dict in bothSideOptions">
+                    <span v-if= "dict.dictValue === printDetail.bothSideFlag">{{dict.dictLabel}}</span>
+                    <span v-if=" printDetail.bothSideFlag===null">暂无数据</span>
+              </div>
+              <!-- <div v-if="printDetail.bothSideFlag == 0">单页</div>
               <div v-else-if="printDetail.status == 1">双页</div>
-               <div v-else>暂无数据</div>
+               <div v-else>暂无数据</div> -->
             </el-form-item>
             <el-form-item label="封胶标志：" label-width="120px">
               <div v-if="printDetail.sealingFlag == 0">非封胶</div>
               <div v-else-if="printDetail.sealingFlag == 1">封胶</div>
                <div v-else>暂无数据</div>
+
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -245,8 +263,12 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="封面颜色：" label-width="120px">
-              <div v-if="printDetail.coverColor == 0">蓝色</div>
-              <div v-else>暂无数据</div>
+              <div v-for="dict in coverColorOptions">
+                    <span v-if= "dict.dictValue === printDetail.coverColor">{{dict.dictLabel}}</span>
+                    <span v-if=" printDetail.coverColor===null">暂无数据</span>
+              </div>
+              <!-- <div v-if="printDetail.coverColor == 0">蓝色</div>
+              <div v-else>暂无数据</div> -->
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -482,6 +504,16 @@ export default {
         remark: null
       };
       this.resetForm("form");
+    },
+    handleDownload(url){
+       try {
+          var elemIF = document.createElement("iframe");
+          elemIF.src = url;
+          elemIF.style.display = "none";
+          document.body.appendChild(elemIF);
+        } catch (e) {
+          alert("下载异常！");
+        }
     },
     /** 搜索按钮操作 */
     handleQuery() {
