@@ -306,9 +306,9 @@ export default {
         var res=response.rows;;
         res.forEach((item)=>{
           item.packageInfo= item.packageInfo.slice(0,3)+'...';
-          if(item.status=='1'||item.status=='3'){
+          if(item.status=='1'||item.status=='0'){
             item.flag=true;
-            if(item.status=='3'){
+            if(item.status=='0'){
               item.updateValue='接单';
             }
              if(item.status=='1'){
