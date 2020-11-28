@@ -121,7 +121,7 @@
            size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleUpdate(scope.row)" v-if="scope.row.flag">{{updateValue}}</el-button>
+            @click="handleUpdate(scope.row)" v-if="scope.row.flag">{{scope.row.updateValue}}</el-button>
             <!-- size="mini"
             type="text"
             icon="el-icon-edit"
@@ -280,7 +280,7 @@ export default {
       },
       packageSizeOptions:[],
       statusOptions:[],
-      updateValue:'',
+      // updateValue:'',
       updateParams:{},
       packageDetail:{},
       packageDetailFlag:true,
@@ -309,10 +309,10 @@ export default {
           if(item.status=='1'||item.status=='3'){
             item.flag=true;
             if(item.status=='3'){
-              this.updateValue='接单';
+              item.updateValue='接单';
             }
-            else{
-              this.updateValue='派送';
+             if(item.status=='1'){
+              item.updateValue='派送';
             }
           }
           else{
@@ -327,6 +327,8 @@ export default {
       });
     },
     handleDetail(row) {
+       this.deliveryFlag=true;
+      this.packageDetailFlag=true;
       getPackage(row.packageId).then(response => {
          this.packageDetail=response.data;
         this.userDelivery=this.packageDetail.userDelivery;

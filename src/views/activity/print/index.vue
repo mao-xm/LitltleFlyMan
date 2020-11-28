@@ -192,7 +192,7 @@
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleUpdate(scope.row)" v-if="scope.row.flag">{{updateValue}}</el-button>
+            @click="handleUpdate(scope.row)" v-if="scope.row.flag">{{scope.row.updateValue}}</el-button>
           <el-button
           icon="el-icon-download"
           type="text"
@@ -414,8 +414,7 @@ export default {
          //修改参数
         updateParams:{},
         userDelivery:{},
-        userPrint:{},
-        updateValue:''
+        userPrint:{}
         
         
     };
@@ -455,10 +454,10 @@ export default {
           if(item.status=='1'||item.status=='2'){
             item.flag=true;
             if(item.status=='1'){
-              this.updateValue='接单';
+              item.updateValue='接单';
             }
             else{
-              this.updateValue='派送';
+              item.updateValue='派送';
             }
           }
           else{
@@ -575,6 +574,9 @@ export default {
       }
     },
      handleDetail(row) {
+       this.printDetailFlag=true;
+       this.deliveryFlag=true;
+       this.printFlag=true;
       getPrint(row.printId).then(response => {
          this.printDetail=response.data;
          this.userDelivery=this.printDetail.userDelivery;

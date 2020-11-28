@@ -166,7 +166,7 @@
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleUpdate(scope.row)" v-if="scope.row.flag">{{updateValue}}</el-button>
+            @click="handleUpdate(scope.row)" v-if="scope.row.flag">{{scope.row.updateValue}}</el-button>
           <!-- <el-button
             size="mini"
             type="text"
@@ -262,6 +262,30 @@
             </el-col>
         </el-row> 
       </el-form>
+       <div class="detail1" v-if="pikeFlag">接衣人员信息：</div>
+       <div class="detail2" v-if="!pikeFlag">接衣人员暂无信息：</div>
+      <el-form ref="form"  :model="userPike" label-width="100px" size="mini" class="content" v-if="pikeFlag"> 
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="接衣人员id：" label-width="120px">{{(userPike.userId!=null?userPike.userId:'暂无数据')}}</el-form-item>
+            <el-form-item label="接衣人员姓名：" label-width="120px">{{(userPike.userName!=null?userPike.userName:'暂无数据')}}</el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="接衣人员电话：" label-width="120px">{{(userPike.phonenumber!=null?userPike.phonenumber:'暂无数据')}}</el-form-item>
+            <el-form-item label="接衣人员邮箱：" label-width="120px">{{(userPike.email!=null?userPike.email:'暂无数据') }}</el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="接衣人员性别：" label-width="120px">
+              <div v-if="userPike.sex== 0">男</div>
+              <div v-else-if="userPike.sex == 1">女</div>
+               <div v-else>暂无数据</div>
+            </el-form-item>
+          </el-col>
+           <el-col :span="12">
+            <el-form-item label="接衣人员备注：" label-width="120px">{{(userPike.remark!=null?userPike.remark:'暂无数据')}}</el-form-item>
+          </el-col>
+        </el-row>
+      </el-form> 
        <div class="detail1" v-if="washFlag">清洗人员信息：</div>
        <div class="detail2" v-if="!washFlag">清洗人员暂无信息：</div>
       <el-form ref="form"  :model="userWash" label-width="100px" size="mini" class="content" v-if="washFlag"> 
@@ -352,12 +376,13 @@ export default {
        statusOptions:  [],
        laundryDetail:{},
        updateParams:{},
-       updateValue:'',
        userDelivery:{},
        userWash:{},
+       userPike:{},
        deliveryFlag:true,
        laundryDetailFlag:true,
-       washFlag:true
+       washFlag:true,
+       pikeFlag:true,
 
     };
   },
@@ -384,13 +409,13 @@ export default {
           if(item.status=='1'||item.status=='2'||item.status=='3'){
             item.flag=true;
             if(item.status=='1'){
-              this.updateValue='接单';
+              item.updateValue='接单';
             }
             else if(item.status=='2'){
-              this.updateValue='清洗';
+              item.updateValue='清洗';
             }
             else{
-              this.updateValue='派送';
+              item.updateValue='派送';
             }
           }
           else{
@@ -495,10 +520,15 @@ export default {
       }
     },
      handleDetail(row) {
+       this.deliveryFlag=true;
+       this.laundryDetailFlag=true;
+       this.washFlag=true;
+        this.pikeFlag=true;
       getLaundry(row.laundryId).then(response => {
          this.laundryDetail=response.data;
          this.userDelivery=this.laundryDetail.userDelivery;
          this.userWash=this.laundryDetail.userWash;
+         this.userPike=this.laundryDetail.userPike;
          this.open1 = true; 
          if(this.userDelivery==null){
            this.deliveryFlag=false;
@@ -508,6 +538,9 @@ export default {
          }
          if(this.userWash==null){
            this.washFlag=false;
+         }
+          if(this.userPike==null){
+           this.pikeFlag=false;
          }
       });
     },

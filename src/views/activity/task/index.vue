@@ -296,6 +296,7 @@ export default {
       this.title = "添加任务信息";
     },
      handleDetail(row) {
+       this.taskDetailFlag=true;
       getTask(row.taskId).then(response => {
          this.taskDetail=response.data;
         //  this.userDelivery=this.printDetail.userDelivery;
