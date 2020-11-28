@@ -295,6 +295,7 @@
 
 <script>
 import { listLaundry, getLaundry, delLaundry, addLaundry, updateLaundry, exportLaundry } from "@/api/activity/wash";
+import store from "@/store";
 
 export default {
   name: "Laundry",
@@ -310,6 +311,7 @@ export default {
       multiple: true,
       // 显示搜索条件
       showSearch: true,
+      uId: store.getters.uId,
       // 总条数
       total: 0,
       // 洗衣订单信息表格数据
@@ -461,6 +463,7 @@ export default {
       }
       if(row.status=='2'){
          this.updateParams.status='3';
+         this.updateParams.userWashId = this.uId;
          var Params= this.updateParams;
           this.$confirm('是否确认修改为清洗状态?', "提示", {
           confirmButtonText: "确定",
@@ -476,6 +479,7 @@ export default {
       }
        if(row.status=='3'){
          this.updateParams.status='4';
+         this.updateParams.userDeliveryId = this.uId;
          var Params= this.updateParams;
           this.$confirm('是否确认修改为派送状态?', "提示", {
           confirmButtonText: "确定",

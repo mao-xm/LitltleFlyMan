@@ -88,6 +88,7 @@
                 size="mini"
                 type="text"
                 icon="el-icon-edit"
+                v-if="scope.row.status === '0'"
                 @click="handleUpdate(scope.row)"
               >处理</el-button>
               <el-button
@@ -213,15 +214,9 @@ export default {
        listFeedback(this.addDateRange(this.queryParams, this.dateRange)).then(
         response => {
           this.feedbackList = response.rows;
-          var array=[];
           this.feedbackList.forEach((item)=> {
-          if( item.status==0){
-            // item.status='未处理';
-            item.feedbackContent= item.feedbackContent.slice(0,3)+'...';
-            array.push(item);
-          }
+              item.feedbackContent= item.feedbackContent.slice(0,3)+'...';
            })
-           this.feedbackList=array;
           this.total = response.total;
           this.loading = false;
         }

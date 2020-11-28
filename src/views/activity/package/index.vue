@@ -226,6 +226,7 @@
 
 <script>
 import { listPackage, getPackage, delPackage, addPackage, updatePackage, exportPackage } from "@/api/activity/package";
+import store from "@/store";
 
 export default {
   name: "Package",
@@ -241,6 +242,7 @@ export default {
       multiple: true,
       // 显示搜索条件
       showSearch: true,
+      uId: store.getters.uId,
       // 总条数
       total: 0,
       // 包裹订单信息表格数据
@@ -398,6 +400,7 @@ export default {
       }
       if(row.status=='1'){
          this.updateParams.status='2';
+         this.updateParams.userDeliveryId = this.uId;
          var Params= this.updateParams;
           this.$confirm('是否确认修改为派送状态?', "提示", {
           confirmButtonText: "确定",

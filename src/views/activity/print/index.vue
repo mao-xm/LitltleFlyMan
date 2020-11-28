@@ -335,6 +335,7 @@
 
 <script>
 import { listPrint, getPrint, delPrint, addPrint, updatePrint, exportPrint } from "@/api/activity/print";
+import store from "@/store";
 
 export default {
   name: "Print",
@@ -342,6 +343,7 @@ export default {
     return {
       // 遮罩层
       loading: true,
+      uId: store.getters.uId,
       // 选中数组
       ids: [],
       // 非单个禁用
@@ -378,7 +380,6 @@ export default {
         addressId: null,
         coverColor: null,
         fee: null,
-       
       },
        printDetailFlag:true,
         deliveryFlag:true,
@@ -542,6 +543,7 @@ export default {
        this.updateParams.printId=row.printId;
       if(row.status=='1'){
          this.updateParams.status='2';
+         this.updateParams.userPrintId = this.uId;
          var Params= this.updateParams;
           this.$confirm('是否确认修改为接单状态?', "提示", {
           confirmButtonText: "确定",
@@ -557,6 +559,7 @@ export default {
       }
       if(row.status=='2'){
          this.updateParams.status='3';
+         this.updateParams.userDeliveryId = this.uId;
          var Params= this.updateParams;
           this.$confirm('是否确认修改为派送状态?', "提示", {
           confirmButtonText: "确定",
@@ -582,6 +585,7 @@ export default {
            this.printDetailFlag=false;
          }
          if(this.userDelivery==null){
+           console.log("userDelivery==null");
            this.deliveryFlag=false;
          }
          if(this.userPrint==null){
