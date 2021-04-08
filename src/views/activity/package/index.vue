@@ -385,7 +385,7 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.updateParams.packageId=row.packageId;
-      if(row.status=='3'){
+      if(row.status=='0'){
          this.updateParams.status='1';
          var Params= this.updateParams;
           this.$confirm('是否确认修改为接单状态?', "提示", {

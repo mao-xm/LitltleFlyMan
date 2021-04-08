@@ -1,17 +1,17 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch">
-      <el-form-item label="学院名称" prop="collegeName">
+      <el-form-item label="学校名称" prop="schoolName">
         <el-input
-          v-model="queryParams.collegeName"
-          placeholder="请输入学院名称"
+          v-model="queryParams.schoolName"
+          placeholder="请输入学校名称"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="学院状态" clearable size="small">
+        <el-select v-model="queryParams.status" placeholder="学校状态" clearable size="small">
           <el-option
             v-for="dict in statusOptions"
             :key="dict.dictValue"
@@ -46,8 +46,8 @@
       default-expand-all
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
-      <el-table-column prop="collegeName" label="学院名称" width="260"></el-table-column>
-      <el-table-column prop="orderNum" label="排序" width="200"></el-table-column>
+      <el-table-column prop="schoolName" label="学校名称" width="260"></el-table-column>
+      <!-- <el-table-column prop="orderNum" label="排序" width="200"></el-table-column> -->
       <el-table-column prop="status" label="状态" :formatter="statusFormat" width="100"></el-table-column>
       <el-table-column label="创建时间" align="center" prop="createTime" width="200">
         <template slot-scope="scope">
@@ -86,23 +86,23 @@
     <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row>
-          <el-col :span="24" v-if="form.parentId !== 0">
+          <!-- <el-col :span="24" v-if="form.parentId !== 0">
             <el-form-item label="上级学院" prop="parentId">
               <treeselect v-model="form.parentId" :options="collegeOptions" :normalizer="normalizer" placeholder="选择上级学院" />
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="12">
-            <el-form-item label="学院名称" prop="collegeName">
-              <el-input v-model="form.collegeName" placeholder="请输入学院名称" />
+            <el-form-item label="学校名称" prop="schoolName">
+              <el-input v-model="form.schoolName" placeholder="请输入学校名称" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <!-- <el-col :span="12">
             <el-form-item label="显示排序" prop="orderNum">
               <el-input-number v-model="form.orderNum" controls-position="right" :min="0" />
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="12">
-            <el-form-item label="学院状态">
+            <el-form-item label="学校状态">
               <el-radio-group v-model="form.status">
                 <el-radio
                   v-for="dict in statusOptions"
@@ -148,18 +148,18 @@ export default {
       statusOptions: [],
       // 查询参数
       queryParams: {
-        collegeName: undefined,
+        schoolName: undefined,
         status: undefined
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
-        parentId: [
-          { required: true, message: "上级学院不能为空", trigger: "blur" }
-        ],
-        collegeName: [
-          { required: true, message: "学院名称不能为空", trigger: "blur" }
+        // parentId: [
+        //   { required: true, message: "上级学院不能为空", trigger: "blur" }
+        // ],
+        schholName: [
+          { required: true, message: "学校名称不能为空", trigger: "blur" }
         ],
         orderNum: [
           { required: true, message: "菜单顺序不能为空", trigger: "blur" }
@@ -192,7 +192,8 @@ export default {
     getList() {
       this.loading = true;
       listCollege(this.queryParams).then(response => {
-        this.collegeList = this.handleTree(response.data, "collegeId");
+        // this.collegeList = this.handleTree(response.data, "collegeId");
+         this.collegeList =response.rows;
         this.loading = false;
       });
     },
@@ -203,7 +204,7 @@ export default {
       }
       return {
         id: node.collegeId,
-        label: node.collegeName,
+        label: node.schoolName,
         children: node.children
       };
     },
@@ -220,9 +221,9 @@ export default {
     reset() {
       this.form = {
         collegeId: undefined,
-        parentId: undefined,
-        collegeName: undefined,
-        orderNum: undefined,
+        // parentId: undefined,
+        schoolName: undefined,
+        // orderNum: undefined,
         leader: undefined,
         phone: undefined,
         email: undefined,
@@ -246,7 +247,7 @@ export default {
         this.form.parentId = row.collegeId;
       }
       this.open = true;
-      this.title = "添加学院";
+      this.title = "添加学校";
       listCollege().then(response => {
 	        this.collegeOptions = this.handleTree(response.data, "collegeId");
       });
@@ -254,14 +255,14 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      getCollege(row.collegeId).then(response => {
+      getCollege(row.schoolId).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改学院";
+        this.title = "修改学校";
       });
-      listCollegeExcludeChild(row.collegeId).then(response => {
-	        this.collegeOptions = this.handleTree(response.data, "collegeId");
-      });
+      // listCollegeExcludeChild(row.schoolId).then(response => {
+	    //     this.collegeOptions = this.handleTree(response.data, "collegeId");
+      // });
     },
     /** 提交按钮 */
     submitForm: function() {
@@ -285,12 +286,12 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      this.$confirm('是否确认删除名称为"' + row.collegeName + '"的数据项?', "警告", {
+      this.$confirm('是否确认删除名称为"' + row.schoolName + '"的数据项?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         }).then(function() {
-          return delCollege(row.collegeId);
+          return delCollege(row.schoolId);
         }).then(() => {
           this.getList();
           this.msgSuccess("删除成功");
