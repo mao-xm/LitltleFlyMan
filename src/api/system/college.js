@@ -36,7 +36,7 @@ export function treeselect() {
 // 根据角色ID查询学院树结构
 export function roleCollegeTreeselect(roleId) {
   return request({
-    url: '/system/school/roleCollegeTreeselect/' + roleId,
+    url: '/system/school/roleSchoolListselect/' + roleId,
     method: 'get'
   })
 }

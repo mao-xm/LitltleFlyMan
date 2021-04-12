@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row :gutter="20">
       <!--学院数据-->
-      <el-col :span="4" :xs="24">
+      <!-- <el-col :span="4" :xs="24">
         <div class="head-container">
           <el-input
             v-model="collegeName"
@@ -24,7 +24,7 @@
             @node-click="handleNodeClick"
           />
         </div>
-      </el-col>
+      </el-col> -->
       <!--用户数据-->
       <el-col :span="20" :xs="24">
         <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
@@ -40,7 +40,7 @@
           </el-form-item>
           <el-form-item label="手机号码" prop="phonenumber">
             <el-input
-              v-model="queryParams.phonenumber"
+              v-model="queryParams.phoneNumber"
               placeholder="请输入手机号码"
               clearable
               size="small"
@@ -138,7 +138,7 @@
           <el-table-column label="用户编号" align="center" prop="userId" />
           <el-table-column label="用户名称" align="center" prop="userName" :show-overflow-tooltip="true" />
           <el-table-column label="用户昵称" align="center" prop="nickName" :show-overflow-tooltip="true" />
-          <el-table-column label="学院" align="center" prop="college.collegeName" :show-overflow-tooltip="true" />
+          <el-table-column label="学校" align="center" prop="school.schoolName" :show-overflow-tooltip="true" />
           <el-table-column label="手机号码" align="center" prop="phonenumber" width="120" />
           <el-table-column label="状态" align="center">
             <template slot-scope="scope">
@@ -208,15 +208,29 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="归属学院" prop="collegeId">
-              <treeselect v-model="form.collegeId" :options="collegeOptions" :show-count="true" placeholder="请选择归属学院" />
+            <el-form-item label="归属学校" prop="schoolId">
+                <el-select
+            v-model="form.schoolId"
+            placeholder="请选择归属学校"
+            clearable
+            size="small"
+            style="width: 200px"
+          >
+                <el-option
+                  v-for="school in collegeOptions"
+                  :key="school.schoolId"
+                  :label="school.schoolName"
+                  :value="school.schoolId"
+                />
+                </el-select>
+              <!-- <treeselect v-model="form.schoolId" :options="collegeOptions" :show-count="true" placeholder="请选择归属学校" /> -->
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="手机号码" prop="phonenumber">
-              <el-input v-model="form.phonenumber" placeholder="请输入手机号码" maxlength="11" />
+            <el-form-item label="手机号码" prop="phoneNumber">
+              <el-input v-model="form.phoneNumber" placeholder="请输入手机号码" maxlength="11" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -250,33 +264,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="状态">
-              <el-radio-group v-model="form.status">
-                <el-radio
-                  v-for="dict in statusOptions"
-                  :key="dict.dictValue"
-                  :label="dict.dictValue"
-                >{{dict.dictLabel}}</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="岗位">
-              <el-select v-model="form.postIds" multiple placeholder="请选择">
-                <el-option
-                  v-for="item in postOptions"
-                  :key="item.postId"
-                  :label="item.postName"
-                  :value="item.postId"
-                  :disabled="item.status == 1"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
+            <el-col :span="12">
             <el-form-item label="角色">
               <el-select v-model="form.roleIds" multiple placeholder="请选择">
                 <el-option
@@ -289,6 +277,33 @@
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="状态">
+              <el-radio-group v-model="form.status">
+                <el-radio
+                  v-for="dict in statusOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictValue"
+                >{{dict.dictLabel}}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <!-- <el-col :span="12">
+            <el-form-item label="岗位">
+              <el-select v-model="form.postIds" multiple placeholder="请选择">
+                <el-option
+                  v-for="item in postOptions"
+                  :key="item.postId"
+                  :label="item.postName"
+                  :value="item.postId"
+                  :disabled="item.status == 1"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col> -->
+        
         </el-row>
         <el-row>
           <el-col :span="24">
@@ -340,10 +355,9 @@
 <script>
 import { listUser, getUser, delUser, addUser, updateUser, exportUser, resetUserPwd, changeUserStatus, importTemplate } from "@/api/system/user";
 import { getToken } from "@/utils/auth";
-import { treeselect } from "@/api/system/college";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-
+import { listCollege } from "@/api/system/college";
 export default {
   name: "User",
   components: { Treeselect },
@@ -409,7 +423,7 @@ export default {
         pageNum: 1,
         pageSize: 10,
         userName: undefined,
-        phonenumber: undefined,
+        phoneNumber: undefined,
         status: undefined,
         collegeId: undefined
       },
@@ -435,7 +449,7 @@ export default {
             trigger: ["blur", "change"]
           }
         ],
-        phonenumber: [
+        phoneNumber: [
           { required: true, message: "手机号码不能为空", trigger: "blur" },
           {
             pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
@@ -454,7 +468,7 @@ export default {
   },
   created() {
     this.getList();
-    this.getTreeselect();
+    // this.getTreeselect();
     this.getDicts("sys_normal_disable").then(response => {
       this.statusOptions = response.data;
     });
@@ -516,11 +530,11 @@ export default {
     reset() {
       this.form = {
         userId: undefined,
-        collegeId: undefined,
+        schoolId: undefined,
         userName: undefined,
         nickName: undefined,
         password: undefined,
-        phonenumber: undefined,
+        phoneNumber: undefined,
         email: undefined,
         sex: undefined,
         status: "0",
@@ -550,7 +564,7 @@ export default {
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
-      this.getTreeselect();
+      this.getSchoolList();
       getUser().then(response => {
         this.postOptions = response.posts;
         this.roleOptions = response.roles;
@@ -562,7 +576,6 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      this.getTreeselect();
       const userId = row.userId || this.ids;
       getUser(userId).then(response => {
         this.form = response.data;
@@ -573,6 +586,13 @@ export default {
         this.open = true;
         this.title = "修改用户";
         this.form.password = "";
+      });
+    },
+    getSchoolList(){
+       this.loading = true;
+      listCollege().then(response => {
+         this.collegeOptions =response.rows;
+         this.loading = false;
       });
     },
     /** 重置密码按钮操作 */

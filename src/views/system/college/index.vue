@@ -63,13 +63,13 @@
             @click="handleUpdate(scope.row)"
             v-hasPermi="['system:college:edit']"
           >修改</el-button>
-          <el-button 
+          <!-- <el-button 
             size="mini" 
             type="text" 
             icon="el-icon-plus" 
             @click="handleAdd(scope.row)"
             v-hasPermi="['system:college:add']"
-          >新增</el-button>
+          >新增</el-button> -->
           <el-button
             v-if="scope.row.parentId != 0"
             size="mini"
@@ -243,9 +243,9 @@ export default {
     /** 新增按钮操作 */
     handleAdd(row) {
       this.reset();
-      if (row != undefined) {
-        this.form.parentId = row.collegeId;
-      }
+      // if (row != undefined) {
+      //   this.form.parentId = row.collegeId;
+      // }
       this.open = true;
       this.title = "添加学校";
       listCollege().then(response => {
@@ -268,7 +268,7 @@ export default {
     submitForm: function() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          if (this.form.collegeId != undefined) {
+          if (this.form.schoolId != undefined) {
             updateCollege(this.form).then(response => {
               this.msgSuccess("修改成功");
               this.open = false;

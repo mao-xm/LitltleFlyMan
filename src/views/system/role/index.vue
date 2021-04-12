@@ -219,20 +219,12 @@
           </el-select>
         </el-form-item>
         <el-form-item label="数据权限" v-show="form.dataScope == 2">
-          <el-checkbox v-model="collegeExpand" @change="handleCheckedTreeExpand($event, 'college')">展开/折叠</el-checkbox>
           <el-checkbox v-model="collegeNodeAll" @change="handleCheckedTreeNodeAll($event, 'college')">全选/全不选</el-checkbox>
-          <el-checkbox v-model="form.collegeCheckStrictly" @change="handleCheckedTreeConnect($event, 'college')">父子联动</el-checkbox>
-          <el-tree
-            class="tree-border"
-            :data="collegeOptions"
-            show-checkbox
-            default-expand-all
-            ref="college"
-            node-key="id"
-            :check-strictly="!form.collegeCheckStrictly"
-            empty-text="加载中，请稍后"
-            :props="defaultProps"
-          ></el-tree>
+        </el-form-item>
+         <el-form-item  v-show="form.dataScope == 2">
+             <el-checkbox-group v-model="checkboxd" @change="handleCheckedSchoolsChange">
+             <el-checkbox  v-for="school in collegeOptions" :label="school.schoolId" :key="school.schoolId">{{school.schoolName}}</el-checkbox>
+             </el-checkbox-group>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -252,6 +244,8 @@ export default {
   name: "Role",
   data() {
     return {
+      checkAll: false,
+      isIndeterminate: true,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -268,6 +262,7 @@ export default {
       roleList: [],
       // 弹出层标题
       title: "",
+      checkboxd:[],
       // 是否显示弹出层
       open: false,
       // 是否显示弹出层（数据权限）
@@ -292,11 +287,7 @@ export default {
         },
         {
           value: "3",
-          label: "本学院数据权限"
-        },
-        {
-          value: "4",
-          label: "本学院及以下数据权限"
+          label: "本学校数据权限"
         },
         {
           value: "5",
@@ -359,6 +350,9 @@ export default {
         this.menuOptions = response.data;
       });
     },
+     handleCheckAllChange(val) {
+        this.checkboxd = val ? this.collegeOptions : [];
+      },
     /** 查询学院树结构 */
     getCollegeTreeselect() {
       collegeTreeselect().then(response => {
@@ -378,9 +372,10 @@ export default {
     getCollegeAllCheckedKeys() {
       // 目前被选中的学院节点
       let checkedKeys = this.$refs.college.getCheckedKeys();
+      console.log(checkedKeys);
       // 半选中的学院节点
-      let halfCheckedKeys = this.$refs.college.getHalfCheckedKeys();
-      checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
+      // let halfCheckedKeys = this.$refs.college.getHalfCheckedKeys();
+      // checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
       return checkedKeys;
     },
     /** 根据角色ID查询菜单树结构 */
@@ -393,7 +388,7 @@ export default {
     /** 根据角色ID查询学院树结构 */
     getRoleCollegeTreeselect(roleId) {
       return roleCollegeTreeselect(roleId).then(response => {
-        this.collegeOptions = response.colleges;
+        this.collegeOptions=response.schools;
         return response;
       });
     },
@@ -412,6 +407,12 @@ export default {
           row.status = row.status === "0" ? "1" : "0";
         });
     },
+
+       handleCheckedSchoolsChange(value) {
+        let checkedCount = value.length;
+        this.collegeNodeAll = checkedCount === this.collegeOptions.length;
+        // this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length;
+      },
     // 取消按钮
     cancel() {
       this.open = false;
@@ -481,7 +482,13 @@ export default {
       if (type == 'menu') {
         this.$refs.menu.setCheckedNodes(value ? this.menuOptions: []);
       } else if (type == 'college') {
-        this.$refs.college.setCheckedNodes(value ? this.collegeOptions: []);
+        let checkAllIds=[];
+            this.collegeOptions.map((item)=>{
+               console.log(item.schoolId);
+                  checkAllIds.push(item.schoolId);
+            });
+            this.checkboxd = value ? checkAllIds : [];
+        
       }
     },
     // 树权限（父子联动）
@@ -518,6 +525,8 @@ export default {
     /** 分配数据权限操作 */
     handleDataScope(row) {
       this.reset();
+      this.checkboxd=[];
+       this.collegeOptions=[];
       const roleCollegeTreeselect = this.getRoleCollegeTreeselect(row.roleId);
       getRole(row.roleId).then(response => {
         this.form = response.data;
@@ -555,7 +564,7 @@ export default {
     /** 提交按钮（数据权限） */
     submitDataScope: function() {
       if (this.form.roleId != undefined) {
-        this.form.collegeIds = this.getCollegeAllCheckedKeys();
+        this.form.schoolIds = this.checkboxd;
         dataScope(this.form).then(response => {
           this.msgSuccess("修改成功");
           this.openDataScope = false;
