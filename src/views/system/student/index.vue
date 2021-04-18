@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row :gutter="20">
       <!--学院数据-->
-      <el-col :span="4" :xs="24">
+      <!-- <el-col :span="4" :xs="24">
         <div class="head-container">
           <el-input
             v-model="collegeName"
@@ -24,7 +24,7 @@
             @node-click="handleNodeClick"
           />
         </div>
-      </el-col>
+      </el-col> -->
       <!--用户数据-->
       <el-col :span="20" :xs="24">
         <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
@@ -37,6 +37,20 @@
                 @keyup.enter.native="handleQuery"
                 />
             </el-form-item> -->
+             <el-select
+            v-model="queryParams.schoolId"
+            placeholder="请选择归属学校"
+            clearable
+            size="small"
+            style="width: 200px"
+          >
+                <el-option
+                  v-for="school in collegeOptions"
+                  :key="school.schoolId"
+                  :label="school.schoolName"
+                  :value="school.schoolId"
+                />
+            </el-select>
             <el-form-item label="学生姓名" prop="studentName">
                 <el-input
                 v-model="queryParams.studentName"
@@ -160,7 +174,7 @@
         <el-table v-loading="loading" :data="studentList" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55" align="center" />
             <el-table-column label="学生ID" align="center" prop="studentId" />
-            <el-table-column label="学院" align="center" prop="college.collegeName" :show-overflow-tooltip="true" />
+            <el-table-column label="学校" align="center" prop="school.schoolName" :show-overflow-tooltip="true" />
             <el-table-column label="学生姓名" align="center" prop="studentName" />
             <el-table-column label="学号" align="center" prop="studentNumber" />
             <el-table-column label="邮箱" align="center" prop="email" />
@@ -217,6 +231,7 @@
 import { listStudent, getStudent, delStudent, addStudent, updateStudent, exportStudent } from "@/api/system/student";
 import { treeselect } from "@/api/system/college";
 import Treeselect from "@riophae/vue-treeselect";
+import { listCollege } from "@/api/system/college";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 export default {
   name: "Student",
@@ -265,6 +280,7 @@ export default {
         avatar: null,
         password: null,
         status: null,
+        schoolId:undefined,
       },
       // 表单参数
       form: {},
@@ -284,7 +300,7 @@ export default {
   },
   created() {
     this.getList();
-    this.getTreeselect();
+    this.getSchoolList();
     this.getDicts("sys_normal_disable").then(response => {
       this.statusOptions = response.data;
     });
@@ -310,10 +326,12 @@ export default {
     },
     
 
-    /** 查询学院下拉树结构 */
-    getTreeselect() {
-      treeselect().then(response => {
-        this.collegeOptions = response.data;
+    /** 查询学校 */
+     getSchoolList(){
+       this.loading = true;
+      listCollege().then(response => {
+         this.collegeOptions =response.rows;
+         this.loading = false;
       });
     },
     // 筛选节点

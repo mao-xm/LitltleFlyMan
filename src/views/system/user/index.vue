@@ -1,33 +1,24 @@
 <template>
   <div class="app-container">
     <el-row :gutter="20">
-      <!--学院数据-->
-      <!-- <el-col :span="4" :xs="24">
-        <div class="head-container">
-          <el-input
-            v-model="collegeName"
-            placeholder="请输入学院名称"
-            clearable
-            size="small"
-            prefix-icon="el-icon-search"
-            style="margin-bottom: 20px"
-          />
-        </div>
-        <div class="head-container">
-          <el-tree
-            :data="collegeOptions"
-            :props="defaultProps"
-            :expand-on-click-node="false"
-            :filter-node-method="filterNode"
-            ref="tree"
-            default-expand-all
-            @node-click="handleNodeClick"
-          />
-        </div>
-      </el-col> -->
-      <!--用户数据-->
       <el-col :span="20" :xs="24">
         <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+           <el-form-item label="用户学校" prop="schoolName">
+             <el-select
+            v-model="queryParams.schoolId"
+            placeholder="请选择归属学校"
+            clearable
+            size="small"
+            style="width: 200px"
+          >
+                <el-option
+                  v-for="school in collegeOptions"
+                  :key="school.schoolId"
+                  :label="school.schoolName"
+                  :value="school.schoolId"
+                />
+            </el-select>
+          </el-form-item>
           <el-form-item label="用户名称" prop="userName">
             <el-input
               v-model="queryParams.userName"
@@ -137,9 +128,9 @@
           <el-table-column type="selection" width="50" align="center" />
           <el-table-column label="用户编号" align="center" prop="userId" />
           <el-table-column label="用户名称" align="center" prop="userName" :show-overflow-tooltip="true" />
-          <el-table-column label="用户昵称" align="center" prop="nickName" :show-overflow-tooltip="true" />
+          <el-table-column label="用户昵称" align="center" prop="userNick" :show-overflow-tooltip="true" />
           <el-table-column label="学校" align="center" prop="school.schoolName" :show-overflow-tooltip="true" />
-          <el-table-column label="手机号码" align="center" prop="phonenumber" width="120" />
+          <el-table-column label="手机号码" align="center" prop="phoneNumber" width="120" />
           <el-table-column label="状态" align="center">
             <template slot-scope="scope">
               <el-switch
@@ -203,8 +194,8 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="用户昵称" prop="nickName">
-              <el-input v-model="form.nickName" placeholder="请输入用户昵称" />
+            <el-form-item label="用户昵称" prop="userNick">
+              <el-input v-model="form.userNick" placeholder="请输入用户昵称" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -223,7 +214,6 @@
                   :value="school.schoolId"
                 />
                 </el-select>
-              <!-- <treeselect v-model="form.schoolId" :options="collegeOptions" :show-count="true" placeholder="请选择归属学校" /> -->
             </el-form-item>
           </el-col>
         </el-row>
@@ -290,19 +280,6 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <!-- <el-col :span="12">
-            <el-form-item label="岗位">
-              <el-select v-model="form.postIds" multiple placeholder="请选择">
-                <el-option
-                  v-for="item in postOptions"
-                  :key="item.postId"
-                  :label="item.postName"
-                  :value="item.postId"
-                  :disabled="item.status == 1"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col> -->
         
         </el-row>
         <el-row>
@@ -425,7 +402,8 @@ export default {
         userName: undefined,
         phoneNumber: undefined,
         status: undefined,
-        collegeId: undefined
+        collegeId: undefined,
+        schoolId:undefined,
       },
       // 表单校验
       rules: {
@@ -468,6 +446,7 @@ export default {
   },
   created() {
     this.getList();
+     this.getSchoolList();
     // this.getTreeselect();
     this.getDicts("sys_normal_disable").then(response => {
       this.statusOptions = response.data;
@@ -532,14 +511,13 @@ export default {
         userId: undefined,
         schoolId: undefined,
         userName: undefined,
-        nickName: undefined,
+        userNick: undefined,
         password: undefined,
         phoneNumber: undefined,
         email: undefined,
         sex: undefined,
         status: "0",
         remark: undefined,
-        postIds: [],
         roleIds: []
       };
       this.resetForm("form");
@@ -608,6 +586,7 @@ export default {
     },
     /** 提交按钮 */
     submitForm: function() {
+      console.log("aa");
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.userId != undefined) {
@@ -617,6 +596,7 @@ export default {
               this.getList();
             });
           } else {
+            console.log("bb");
             addUser(this.form).then(response => {
               this.msgSuccess("新增成功");
               this.open = false;
