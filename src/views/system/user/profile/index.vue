@@ -17,15 +17,15 @@
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="phone" />手机号码
-                <div class="pull-right">{{ user.phonenumber }}</div>
+                <div class="pull-right">{{ user.phoneNumber }}</div>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="email" />用户邮箱
                 <div class="pull-right">{{ user.email }}</div>
               </li>
               <li class="list-group-item">
-                <svg-icon icon-class="tree" />所属学院
-                <div class="pull-right" v-if="user.college">{{ user.college.collegeName }} / {{ postGroup }}</div>
+                <svg-icon icon-class="tree" />所属学校
+                <div class="pull-right" v-if="user.school">{{ user.school.schoolName }}</div>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="peoples" />所属角色

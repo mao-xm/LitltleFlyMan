@@ -37,12 +37,12 @@
                 @keyup.enter.native="handleQuery"
                 />
             </el-form-item> -->
+            <el-form-item label="学校" prop="schoolId">
              <el-select
             v-model="queryParams.schoolId"
             placeholder="请选择归属学校"
             clearable
             size="small"
-            style="width: 200px"
           >
                 <el-option
                   v-for="school in collegeOptions"
@@ -51,6 +51,7 @@
                   :value="school.schoolId"
                 />
             </el-select>
+            </el-form-item>
             <el-form-item label="学生姓名" prop="studentName">
                 <el-input
                 v-model="queryParams.studentName"

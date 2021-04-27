@@ -70,14 +70,14 @@
             @click="handleAdd(scope.row)"
             v-hasPermi="['system:college:add']"
           >新增</el-button> -->
-          <el-button
+          <!-- <el-button
             v-if="scope.row.parentId != 0"
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['system:college:remove']"
-          >删除</el-button>
+          >删除</el-button> -->
         </template>
       </el-table-column>
     </el-table>
