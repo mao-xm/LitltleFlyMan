@@ -30,7 +30,7 @@ export function addPrint(data) {
 // 修改打印订单
 export function updatePrint(data) {
   return request({
-    url: '/activity/print',
+    url: '/activity/print/editPrintStatus',
     method: 'put',
     data: data
   })

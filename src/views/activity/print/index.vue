@@ -19,9 +19,9 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item> -->
-      <el-form-item label="打印员工Id" prop="userPrintId" label-width="100px" >
+      <el-form-item label="打印员工Id" prop="printId" label-width="100px" >
         <el-input
-          v-model="queryParams.userPrintId"
+          v-model="queryParams.printId"
           placeholder="请输入打印员工Id"
           clearable
           size="small"
@@ -368,7 +368,7 @@ export default {
         studentId: null,
         fileName: null,
         fileUrl: null,
-        userPrintId: null,
+        printId: null,
         userDeliveryId: null,
         printNumber: null,
         bothSideFlag: null,
@@ -424,16 +424,17 @@ export default {
      this.getDicts("sys_bothside_type").then(response => {
       this.bothSideOptions = response.data;
     });
-    this.getDicts("sys_ color_type").then(response => {
+    this.getDicts("sys_color_type").then(response => {
       this.colorOptions = response.data;
     });
+    console.log(this.colorOptions);
     this.getDicts("sys_sealing_type").then(response => {
       this.sealingOptions = response.data;
     });
      this.getDicts("sys_paper_type").then(response => {
       this.paperOptions = response.data;
     });
-     this.getDicts("sys_status_type").then(response => {
+     this.getDicts("sys_print_status").then(response => {
       this.printOptions = response.data;
     });
      this.getDicts("sys_cover_type").then(response => {
@@ -485,7 +486,7 @@ export default {
         studentId: null,
         fileName: null,
         fileUrl: null,
-        userPrintId: null,
+        printId: null,
         userDeliveryId: null,
         printNumber: null,
         bothSideFlag: null,
@@ -541,8 +542,10 @@ export default {
     handleUpdate(row) {
        this.updateParams.printId=row.printId;
       if(row.status=='1'){
-         this.updateParams.status='2';
-         this.updateParams.userPrintId = this.uId;
+        //  this.updateParams.status='2';
+         this.updateParams.printId = row.printId;
+         this.updateParams.userPrintId=this.uId;
+          // this.updateParams.studentId=row.studentId;
          var Params= this.updateParams;
           this.$confirm('是否确认修改为接单状态?', "提示", {
           confirmButtonText: "确定",
