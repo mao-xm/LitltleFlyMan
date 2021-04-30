@@ -194,6 +194,12 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)" v-if="scope.row.flag">{{scope.row.updateValue}}</el-button>
           <el-button
+           <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleCancel(scope.row)" v-if="scope.row.cancelFlag">取消订单</el-button>
+          <el-button
           icon="el-icon-download"
           type="text"
           size="mini"
@@ -334,7 +340,7 @@
 </template>
 
 <script>
-import { listPrint, getPrint, delPrint, addPrint, updatePrint, exportPrint } from "@/api/activity/print";
+import { listPrint, getPrint, delPrint, addPrint, updatePrint, exportPrint,editDeliveryStatus,editCancelStatus } from "@/api/activity/print";
 import store from "@/store";
 
 export default {
@@ -414,7 +420,9 @@ export default {
          //修改参数
         updateParams:{},
         userDelivery:{},
-        userPrint:{}
+        userPrint:{},
+        //取消订单参数
+        cancelParams:{},
         
         
     };
@@ -450,9 +458,9 @@ export default {
         var arr=[];
         var res=response.rows;;
         res.forEach((item)=>{
-          // item.fileUrl= item.fileUrl.slice(0,4)+'...';
           item.fileName= item.fileName.slice(0,3)+'...';
           if(item.status=='1'||item.status=='2'){
+            item.cancelFlag=true;
             item.flag=true;
             if(item.status=='1'){
               item.updateValue='接单';
@@ -462,14 +470,32 @@ export default {
             }
           }
           else{
-            item.flag=false;
+             item.flag=false;
+            if(item.status=='0'){
+                item.cancelFlag=true;
+            }else{
+            item.cancelFlag=false};
+           
           }
           arr.push(item);
         })
+        
         this.printList = arr;
         this.total = response.total;
         this.loading = false;
       });
+    },
+    //取消订单
+    handleCancel(row){
+      this.cancelParams.printId=row.printId;
+       editCancelStatus(this.cancelParams).then(response => {
+          this.msgSuccess("取消订单成功");
+          this.getList();
+       })
+        
+       
+      
+
     },
     // 取消按钮
     cancel() {
@@ -560,7 +586,8 @@ export default {
          
       }
       if(row.status=='2'){
-         this.updateParams.status='3';
+        //  this.updateParams.status='3';
+        this.updateParams.printId = row.printId;
          this.updateParams.userDeliveryId = this.uId;
          var Params= this.updateParams;
           this.$confirm('是否确认修改为派送状态?', "提示", {
@@ -568,7 +595,7 @@ export default {
           cancelButtonText: "取消",
           type: "warning"
         }).then(function() {
-          return  updatePrint(Params);
+          return  editDeliveryStatus(Params);
         }).then(() => {
            this.msgSuccess("修改成功");
            this.getList();

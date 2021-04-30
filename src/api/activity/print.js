@@ -27,10 +27,28 @@ export function addPrint(data) {
   })
 }
 
-// 修改打印订单
+// 修改打印订单为接单
 export function updatePrint(data) {
   return request({
     url: '/activity/print/editPrintStatus',
+    method: 'put',
+    data: data
+  })
+}
+
+// 修改打印订单为派送
+export function editDeliveryStatus(data) {
+  return request({
+    url: '/activity/print/editDeliveryStatus',
+    method: 'put',
+    data: data
+  })
+}
+
+// 取消订单
+export function editCancelStatus(data) {
+  return request({
+    url: '/activity/print/editCancelStatus',
     method: 'put',
     data: data
   })
