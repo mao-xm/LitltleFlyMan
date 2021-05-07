@@ -10,15 +10,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <!-- <el-form-item label="文件名" prop="fileName">
-        <el-input
-          v-model="queryParams.fileName"
-          placeholder="请输入文件名"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
       <el-form-item label="打印员工Id" prop="printId" label-width="100px" >
         <el-input
           v-model="queryParams.printId"
@@ -37,15 +28,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <!-- <el-form-item label="打印数量" prop="printNumber">
-        <el-input
-          v-model="queryParams.printNumber"
-          placeholder="请输入打印数量"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
       <el-form-item label="单双面标志" prop="bothSideFlag" label-width="100px">
         <el-select v-model="queryParams.bothSideFlag" placeholder="请选择单双面标志" clearable size="small">
           <el-option
@@ -107,15 +89,6 @@
           />
         </el-select>
       </el-form-item>
-      <!-- <el-form-item label="金额" prop="fee">
-        <el-input
-          v-model="queryParams.fee"
-          placeholder="请输入金额"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
       <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -124,12 +97,8 @@
 
 
     <el-table v-loading="loading" :data="printList" @selection-change="handleSelectionChange">
-      <!-- <el-table-column label="打印Id" align="center" prop="printId" /> -->
       <el-table-column label="学生Id" align="center" prop="studentId" />
-      <el-table-column label="文件名" align="center" prop="fileName" />
-      <!-- <el-table-column label="文件url" align="center" prop="fileUrl" /> -->
-      <!-- <el-table-column label="打印员工Id" align="center" prop="userPrintId" />
-      <el-table-column label="派送员工Id" align="center" prop="userDeliveryId" /> -->
+      <el-table-column label="文件名" align="center" prop="fileName" show-overflow-tooltip="true"/>
       <el-table-column label="打印数量" align="center" prop="printNumber" />
       <el-table-column label="单双面标志" align="center">
               <template slot-scope="scope">
@@ -155,12 +124,11 @@
        <el-table-column label="纸张大小" align="center">
               <template slot-scope="scope">
                 <div v-for="dict in paperOptions">
-                  <span v-if= "dict.dictLabel === scope.row.paperSize">{{dict.dictLabel}}</span>
+                  <span v-if= "dict.dictValue === scope.row.paperSize">{{dict.dictLabel}}</span>
                 </div>
               </template>
       </el-table-column>
       
-      <!-- <el-table-column label="学生备注" align="center" prop="studentRemark" /> -->
         <el-table-column label="打印订单状态" align="center">
               <template slot-scope="scope">
                 <div v-for="dict in printOptions">
@@ -168,7 +136,6 @@
                 </div>
               </template>
       </el-table-column>
-      <!-- <el-table-column label="配送地址id" align="center" prop="addressId" /> -->
         <el-table-column label="封面颜色" align="center">
               <template slot-scope="scope">
                 <div v-for="dict in coverColorOptions">
@@ -177,7 +144,6 @@
               </template>
       </el-table-column>
       <el-table-column label="金额" align="center" prop="fee" />
-      <!-- <el-table-column label="备注" align="center" prop="remark" /> -->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
             <el-button
@@ -217,119 +183,112 @@
       @pagination="getList"
     />
     <el-dialog title="打印详情" :visible.sync="open1" width="700px" append-to-body>
-      <div class="detail" v-if="printDetailFlag">学生信息：</div>
-      <div class="detail2" v-if="!printDetailFlag">学生暂无信息：</div>
       <el-form ref="form" :model="printDetail" label-width="100px" size="mini" class="content" v-if="printDetailFlag"> 
         <el-row>
           <el-col :span="12">
-            <el-form-item label="学生id：" label-width="120px">{{ (printDetail.studentId!=null?printDetail.studentId:'暂无数据') }}</el-form-item>
-            <el-form-item label="学生姓名：" label-width="120px">{{ (printDetail.studentName!=null?printDetail.studentName:'暂无数据') }}</el-form-item>
+            <el-form-item label="学生id：" label-width="120px"  v-if="printDetail.studentId">{{printDetail.studentId}}</el-form-item>
+            <el-form-item label="学生姓名：" label-width="120px" v-if="printDetail.studentName">{{ printDetail.studentName}}</el-form-item>
           </el-col>
            <el-col :span="12">
-            <el-form-item label="学生备注：" label-width="120px">{{(printDetail.remark!=null?printDetail.remark:'暂无数据') }}</el-form-item>
-            <el-form-item label="学生地址：" label-width="120px">{{ (printDetail.address!=null?printDetail.address:'暂无数据')}}</el-form-item>
+            <el-form-item label="学生备注：" label-width="120px" v-if="printDetail.remark">{{printDetail.remark}}</el-form-item>
+            <el-form-item label="学生地址：" label-width="120px" v-if="printDetail.address">{{printDetail.address}}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <!-- <el-form-item label="订单状态：" label-width="120px">
-              <div v-for="dict in statusOptions">
-                    <span v-if= "dict.dictValue === packageDetail.status">{{dict.dictLabel}}</span>
-                    <span v-if=" packageDetail.status===null">暂无数据</span>
-              </div>
-            </el-form-item> -->
-            <el-form-item label="单双面标志：" label-width="120px">
+            <el-form-item label="单双面标志：" label-width="120px"  v-if="printDetail.bothSideFlag">
               <div v-for="dict in bothSideOptions">
                     <span v-if= "dict.dictValue === printDetail.bothSideFlag">{{dict.dictLabel}}</span>
-                    <span v-if=" printDetail.bothSideFlag===null">暂无数据</span>
               </div>
-              <!-- <div v-if="printDetail.bothSideFlag == 0">单页</div>
-              <div v-else-if="printDetail.status == 1">双页</div>
-               <div v-else>暂无数据</div> -->
             </el-form-item>
-            <el-form-item label="封胶标志：" label-width="120px">
-              <div v-if="printDetail.sealingFlag == 0">非封胶</div>
-              <div v-else-if="printDetail.sealingFlag == 1">封胶</div>
-               <div v-else>暂无数据</div>
+            <el-form-item label="封胶标志：" label-width="120px" v-if="printDetail.sealingFlag">
+               <div v-for="dict in sealingOptions">
+                    <span v-if= "dict.dictValue === printDetail.sealingFlag">{{dict.dictLabel}}</span>
+              </div>
 
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="订单状态：" label-width="120px">
-              <div v-if="printDetail.status == 0">下单</div>
-              <div v-else-if="printDetail.status == 1">支付</div>
-              <div v-else-if="printDetail.status == 2">接单</div>
-              <div v-else-if="printDetail.status == 3">派送</div>
-               <div v-else-if="printDetail.status == 4">收货</div>
-               <div v-else>暂无数据</div>
+            <el-form-item label="订单状态：" label-width="120px" v-if="printDetail.status">
+               <template slot-scope="scope">
+                <div v-for="dict in printOptions">
+                  <span v-if= "dict.dictValue ===printDetail.status">{{dict.dictLabel}}</span>
+                </div>
+              </template>
             </el-form-item>
-            <el-form-item label="彩印标志：" label-width="120px">
-              <div v-if="printDetail.colorFlag == 0">黑白</div>
-              <div v-else-if="printDetail.colorFlag == 1">彩印</div>
-               <div v-else>暂无数据</div>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="封面颜色：" label-width="120px">
-              <div v-for="dict in coverColorOptions">
-                    <span v-if= "dict.dictValue === printDetail.coverColor">{{dict.dictLabel}}</span>
-                    <span v-if=" printDetail.coverColor===null">暂无数据</span>
-              </div>
-              <!-- <div v-if="printDetail.coverColor == 0">蓝色</div>
-              <div v-else>暂无数据</div> -->
+            <el-form-item label="彩印标志：" label-width="120px" v-if="printDetail.colorFlag">
+               <div v-for="dict in colorOptions">
+                  <span v-if= "dict.dictValue ===printDetail.colorFlag">{{dict.dictLabel}}</span>
+                </div>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="学生备注：" label-width="120px">{{(printDetail.fee!=null?printDetail.fee:'暂无数据')}}</el-form-item>
+            <el-form-item label="封面颜色：" label-width="120px" v-if="printDetail.coverColor">
+               <div v-for="dict in coverColorOptions">
+                  <span v-if= "dict.dictValue ===printDetail.coverColor">{{dict.dictLabel}}</span>
+                </div>
+            </el-form-item>
           </el-col>
-        </el-row>
-      </el-form> 
-       <div class="detail1" v-if="deliveryFlag">派送人员信息：</div>
-       <div class="detail2" v-if="!deliveryFlag">派送人员暂无信息：</div>
-      <el-form ref="form" :model="userDelivery" label-width="100px" size="mini" class="content" v-if="deliveryFlag"> 
-        <el-row>
+             <el-col :span="12">
+          <el-form-item label="学生备注：" label-width="120px"  v-if="printDetail.fee">{{printDetail.fee}}</el-form-item>
+          </el-col>
           <el-col :span="12">
-            <el-form-item label="派送人员id：" label-width="120px">{{ (userDelivery.userId!=null?userDelivery.userId:'暂无数据') }}</el-form-item>
-            <el-form-item label="派送人员姓名：" label-width="120px">{{ (userDelivery.userName!=null?userDelivery.userName:'暂无数据') }}</el-form-item>
+            <el-form-item label="派送人员id：" label-width="120px" v-if="printDetail.userDelivery&&printDetail.userDelivery.userId">{{printDetail.userDelivery.userId}}</el-form-item>
+            <el-form-item label="派送人员姓名：" label-width="120px" v-if="printDetail.userDelivery&&printDetail.userDelivery.userName">{{ printDetail.userDelivery.userName}}</el-form-item>
           </el-col>
-         <el-col :span="12">
-            <el-form-item label="派送人员电话：" label-width="120px">{{(userDelivery.phonenumber!=null?userDelivery.phonenumber:'暂无数据')}}</el-form-item>
-            <el-form-item label="派送人员邮箱：" label-width="120px">{{(userDelivery.email!=null?userDelivery.email:'暂无数据') }}</el-form-item>
+          <el-col :span="12">
+            <el-form-item label="派送人员电话：" label-width="120px" v-if="printDetail.userDelivery&&printDetail.userDelivery.phonenumber">{{printDetail.userDelivery.phonenumber}}</el-form-item>
+            <el-form-item label="派送人员邮箱：" label-width="120px"  v-if="printDetail.userDelivery&&printDetail.userDelivery.email">{{printDetail.userDelivery.email}}</el-form-item>
           </el-col>
             <el-col :span="12">
-            <el-form-item label="派送人员性别：" label-width="120px">
-              <div v-if="userDelivery.sex== 0">男</div>
-              <div v-else-if="userDelivery.sex == 1">女</div>
-              <div v-else>暂无数据</div>
+            <el-form-item label="派送人员性别：" label-width="120px"  v-if="printDetail.userDelivery&&printDetail.userDelivery.sex">
+              <div v-for="dict in userSexOptions">
+                  <span  v-if= "dict.dictValue ===printDetail.userDelivery.sex">{{dict.dictLabel}}</span>
+                </div>
             </el-form-item>
            </el-col>
            <el-col :span="12">
-            <el-form-item label="派送人员备注：" label-width="120px">{{(userDelivery.remark!=null?userDelivery.remark:'暂无数据') }}</el-form-item>
+            <el-form-item label="派送人员备注：" label-width="120px" v-if="printDetail.userDelivery&&printDetail.userDelivery.remark">{{printDetail.userDelivery.remark}}</el-form-item>
             </el-col>
-        </el-row> 
-      </el-form>
-     
-       <div class="detail1" v-if="printFlag">打印人员信息：</div>
-       <div class="detail2" v-if="!printFlag">打印人员暂无信息：</div>
-      <el-form ref="form"  :model="userPrint" label-width="100px" size="mini" class="content" v-if="printFlag"> 
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="打印人员id：" label-width="120px">{{(userPrint.userId!=null?userPrint.userId:'暂无数据') }}</el-form-item>
-            <el-form-item label="打印人员姓名：" label-width="120px">{{(userPrint.userName!=null?userPrint.userName:'暂无数据') }}</el-form-item>
+             <el-col :span="12">
+            <el-form-item label="打印人员id：" label-width="120px" v-if="printDetail.userPrint&&printDetail.userPrint.userId">{{printDetail.userPrint.userId}}</el-form-item>
+            <el-form-item label="打印人员姓名：" label-width="120px"  v-if="printDetail.userPrint&&printDetail.userPrint.userName">{{printDetail.userPrint.userName }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="打印人员电话：" label-width="120px">{{ (userPrint.phonenumber!=null?userPrint.phonenumber:'暂无数据')}}</el-form-item>
-            <el-form-item label="打印人员邮箱：" label-width="120px">{{ (userPrint.email!=null?userPrint.email:'暂无数据')}}</el-form-item>
+            <el-form-item label="打印人员电话：" label-width="120px" v-if="printDetail.userPrint&&printDetail.userPrint.phonenumber">{{printDetail.userPrint.phonenumber}}</el-form-item>
+            <el-form-item label="打印人员邮箱：" label-width="120px" v-if="printDetail.userPrint&&printDetail.userPrint.email">{{ printDetail.userPrint.email}}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="打印人员性别：" label-width="120px">
-              <div v-if="userPrint.sex== 0">男</div>
-              <div v-else-if="userPrint.sex == 1">女</div>
-                <div v-else>暂无数据</div>
+            <el-form-item label="打印人员性别：" label-width="120px" v-if="printDetail.userPrint&&printDetail.userPrint.sex">
+                <div v-for="dict in userSexOptions"  >
+                  <span v-if= "dict.dictValue ===userPrint.sex">{{dict.dictLabel}}</span>
+                </div>
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item label="打印人员备注：" label-width="120px">{{((printDetail.userPrint&&printDetail.userPrint.remark)?printDetail.userPrint.remark:'暂无数据')}}</el-form-item>
+          </el-col>
            <el-col :span="12">
-            <el-form-item label="打印人员备注：" label-width="120px">{{(userPrint.remark!=null?userPrint.remark:'暂无数据')}}</el-form-item>
+            <el-form-item label="取消时间：" label-width="120px" v-if="printDetail.cancelTime">{{timeChange(printDetail.cancelTime)}}</el-form-item>
+          </el-col>
+           <el-col :span="12">
+            <el-form-item label="创建时间：" label-width="120px" v-if="printDetail.createTime">{{timeChange(printDetail.createTime)}}</el-form-item>
+          </el-col>
+           <el-col :span="12">
+            <el-form-item label="派送时间：" label-width="120px" v-if="printDetail.deliveryTime">{{timeChange(printDetail.deliveryTime)}}</el-form-item>
+          </el-col>
+           <el-col :span="12">
+            <el-form-item label="完成时间：" label-width="120px" v-if="printDetail.finishTime">{{timeChange(printDetail.finishTime)}}</el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="支付时间：" label-width="120px" v-if="printDetail.payTime">{{timeChange(printDetail.payTime)}}</el-form-item>
+          </el-col>
+           <el-col :span="12">
+            <el-form-item label="打印时间：" label-width="120px" v-if="printDetail.printTime">{{timeChange(printDetail.printTime)}}</el-form-item>
+          </el-col>
+           <el-col :span="12">
+            <el-form-item label="打印时间：" label-width="120px" v-if="printDetail.updateTime">{{timeChange(printDetail.updateTime)}}</el-form-item>
           </el-col>
         </el-row>
+      </el-form> 
       </el-form> 
       <div slot="footer" class="dialog-footer">
         <el-button @click="open1 = false">关 闭</el-button>
@@ -416,6 +375,7 @@ export default {
         sealingOptions: [],
         paperOptions: [],
         coverColorOptions: [],
+        userSexOptions:[],
         printDetail:{},
          //修改参数
         updateParams:{},
@@ -435,18 +395,21 @@ export default {
     this.getDicts("sys_color_type").then(response => {
       this.colorOptions = response.data;
     });
-    console.log(this.colorOptions);
     this.getDicts("sys_sealing_type").then(response => {
       this.sealingOptions = response.data;
     });
      this.getDicts("sys_paper_type").then(response => {
       this.paperOptions = response.data;
     });
+  
      this.getDicts("sys_print_status").then(response => {
       this.printOptions = response.data;
     });
      this.getDicts("sys_cover_type").then(response => {
       this.coverColorOptions = response.data;
+    });
+      this.getDicts("sys_user_sex").then(response => {
+      this.userSexOptions = response.data;
     });
 
   },
@@ -458,7 +421,7 @@ export default {
         var arr=[];
         var res=response.rows;;
         res.forEach((item)=>{
-          item.fileName= item.fileName.slice(0,3)+'...';
+          // item.fileName= item.fileName.slice(0,3)+'...';
           if(item.status=='1'||item.status=='2'){
             item.cancelFlag=true;
             item.flag=true;
@@ -505,6 +468,22 @@ export default {
       cancel1() {
       this.open1 = false;
     },
+    timeChange(UTCDateString) {
+    if (!UTCDateString) {
+      return '-';
+    }
+    function formatFunc(str) {
+      return str > 9 ? str : '0' + str
+    }
+    var date2 = new Date(UTCDateString);
+    console.log('时间', date2)
+    var year = date2.getFullYear();
+    var mon = formatFunc(date2.getMonth() + 1);
+    var day = formatFunc(date2.getDate());
+   
+    var dateStr = year + '-' + mon + '-' + day ;
+    return dateStr;
+  },
     // 表单重置
     reset() {
       this.form = {
