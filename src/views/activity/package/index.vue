@@ -151,7 +151,7 @@
       <el-table-column label="配送地址id" align="center" prop="addressId" />
       <el-table-column label="金额" align="center" prop="fee" />
       <el-table-column label="备注" align="center" prop="remark" show-overflow-tooltip="true"/>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200px">
         <template slot-scope="scope">
            <el-button
            size="mini"

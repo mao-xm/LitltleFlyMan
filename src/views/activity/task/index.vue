@@ -103,7 +103,7 @@
       <el-table-column label="任务标题" align="center" prop="taskTitle" />
       <el-table-column label="审核人id" align="center" prop="userCheckId" />
       <el-table-column label="审核意见" align="center" prop="checkContent" show-overflow-tooltip="true"/>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="150px">
         <template slot-scope="scope">
           <el-button
             size="mini"
