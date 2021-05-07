@@ -72,9 +72,9 @@
       <el-table-column label="执行状态" align="center" prop="status" />
       <el-table-column label="反馈人ID" align="center" prop="studentId" />
       <el-table-column label="处理人ID" align="center" prop="userManageId" />
-      <el-table-column label="处理意见" align="center" prop="manageContent" />
+      <el-table-column label="处理意见" align="center" prop="manageContent" show-overflow-tooltip="true"/>
       <el-table-column label="订单ID" align="center" prop="orderId" />
-      <el-table-column label="备注" align="center" prop="remark" />
+      <el-table-column label="备注" align="center" prop="remark" show-overflow-tooltip="true"/>
        <el-table-column label="订单类型" align="center" prop="orderType">
               <template slot-scope="scope">
                 <div v-for="dict in feedbackOrderOptions">
@@ -82,7 +82,7 @@
                 </div>
               </template>
       </el-table-column>
-      <el-table-column label="反馈内容" align="center" prop="feedbackContent" />
+      <el-table-column label="反馈内容" align="center" prop="feedbackContent" show-overflow-tooltip="true"/>
       <el-table-column label="处理时间" align="center" prop="manageTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.manageTime, '{y}-{m}-{d}') }}</span>
@@ -130,40 +130,52 @@
     />
 
      <el-dialog title="反馈详情" :visible.sync="open" width="700px" append-to-body>
-      <el-form ref="form" :model="feedbackDetail" label-width="100px" size="mini" class="content"  v-if="feedbackDetailFlag"> 
+      <el-form ref="form" :model="feedbackDetail" label-width="100px" size="mini" class="content"  v-if="feedbackDetail"> 
         <el-row>
+           <el-col :span="24" v-if="feedbackDetail.sysFeedbackMedias" v-for="(item,index) in (feedbackDetail.sysFeedbackMedias)" :key="index" >
+            <el-form-item label="反馈图片:" label-width="120px"  > 
+               <img :src="item.feedbackMediaUrl" width="100px" >
+               <img :src="item.feedbackMediaUrl" width="100px" >
+               <img :src="item.feedbackMediaUrl" width="100px" >
+               <img :src="item.feedbackMediaUrl" width="100px" >
+               <img :src="item.feedbackMediaUrl" width="100px" >
+               <img :src="item.feedbackMediaUrl" width="100px" >
+               <img :src="item.feedbackMediaUrl" width="100px" >
+            </el-form-item>
+          </el-col>
           <el-col :span="12">
-            <el-form-item label="学生id：" label-width="120px">{{(feedbackDetail.studentId!=null?feedbackDetail.studentId:'暂无数据')}}</el-form-item>
-            <el-form-item label="学生姓名：" label-width="120px">{{(feedbackDetail.studentName!=null?feedbackDetail.studentName:'暂无数据') }}</el-form-item>
+            <el-form-item label="学生id：" label-width="120px" v-if="feedbackDetail.studentId">{{feedbackDetail.studentId}}</el-form-item>
           </el-col>
            <el-col :span="12">
-            <el-form-item label="学生备注：" label-width="120px">{{(feedbackDetail.remark!=null?feedbackDetail.remark:'暂无数据') }}</el-form-item>
-            <el-form-item label="反馈内容：" label-width="120px">{{(feedbackDetail.feedbackContent!=null?feedbackDetail.feedbackContent:'暂无数据') }}</el-form-item>
+            <el-form-item label="学生姓名：" label-width="120px"  v-if="feedbackDetail.studentName">{{feedbackDetail.studentName}}</el-form-item>
+          </el-col>
+           <el-col :span="12">
+            <el-form-item label="学生备注：" label-width="120px"  v-if="feedbackDetail.remark">{{feedbackDetail.remark}}</el-form-item>
+          </el-col>
+            <el-col :span="12">
+            <el-form-item label="反馈内容：" label-width="120px"  v-if="feedbackDetail.feedbackContent">{{feedbackDetail.feedbackContent}}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="反馈状态：" label-width="120px" >
+            <el-form-item label="反馈状态：" label-width="120px"   v-if="feedbackDetail.status">
                   <div v-for="dict in feedbackOptions">
                     <span v-if= "dict.dictValue === feedbackDetail.status">{{dict.dictLabel}}</span>
-                    <span v-if="feedbackDetail.status===null">暂无数据</span>
                   </div>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="反馈时间：" label-width="120px">{{ (feedbackDetail.createTime!=null?feedbackDetail.createTime:'暂无数据') }}</el-form-item>
+            <el-form-item label="反馈时间：" label-width="120px" v-if="feedbackDetail.createTime">{{parseTime(feedbackDetail.createTime, '{y}-{m}-{d}')}}</el-form-item>
           </el-col>
-          <el-col v-if="isUrl">
-            <el-form-item label="反馈图片：" label-width="120px" > 
-            </el-form-item>
+           <el-col :span="12">
+            <el-form-item label="处理时间：" label-width="120px" v-if="feedbackDetail.manageTime">{{parseTime(feedbackDetail.manageTime, '{y}-{m}-{d}')}}</el-form-item>
           </el-col>
-          <el-col v-if="!isUrl">
-            <el-form-item label="反馈图片：" label-width="120px" > 
-            暂无反馈图片
-            </el-form-item>
+           <el-col :span="12">
+            <el-form-item label="更新时间：" label-width="120px" v-if="feedbackDetail.updateTime">{{parseTime(feedbackDetail.updateTime, '{y}-{m}-{d}')}}</el-form-item>
           </el-col>
-          <el-col :span="6" v-for="(item,index) in (feedbackDetail.sysFeedbackMedias)" :key="index">
+         
+          <!-- <el-col :span="6" v-for="(item,index) in (feedbackDetail.sysFeedbackMedias)" :key="index">
                  <el-form-item > <img :src="item.feedbackMediaUrl" width="100px">
                  </el-form-item>
-          </el-col>
+          </el-col> -->
         </el-row>
       </el-form> 
       <div slot="footer" class="dialog-footer">
@@ -469,7 +481,8 @@ export default {
     },
      //成功处理
     handle(row){
-       this.handleParams.feedbackId = this.uId;
+       this.handleParams.userManageId= this.uId;
+       this.handleParams.feedbackId = row.feedbackId;
        this.handleParams.manageContent=row.manageContent;
       updateFeedback( this.handleParams).then(response => {
          this.msgSuccess("已成功处理");
@@ -484,9 +497,6 @@ export default {
       this.open = true;
       getFeedback(row.feedbackId).then(response => {
          this.feedbackDetail=response.data;
-          if(this.feedbackDetail==null){
-           this.feedbackDetailFlag=false;
-         }
          if(this.feedbackDetail.sysFeedbackMedias==null){
            this.isUrl=false;
          }
@@ -694,8 +704,8 @@ export default {
 // };
 </script>
 <style scoped>
- /* img{
-   margin-left:-60px;
+ img{
+   margin-left:20px;
 
- } */
+ }
 </style>
