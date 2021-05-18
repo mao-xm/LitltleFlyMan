@@ -52,10 +52,10 @@
                 />
             </el-select>
             </el-form-item>
-            <el-form-item label="学生姓名" prop="studentName">
+            <el-form-item label="用户姓名" prop="studentName">
                 <el-input
                 v-model="queryParams.studentName"
-                placeholder="请输入学生姓名"
+                placeholder="请输入用户姓名"
                 clearable
                 size="small"
                 @keyup.enter.native="handleQuery"
@@ -174,9 +174,9 @@
 
         <el-table v-loading="loading" :data="studentList" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55" align="center" />
-            <el-table-column label="学生ID" align="center" prop="studentId" />
+            <el-table-column label="用户ID" align="center" prop="studentId" />
             <el-table-column label="学校" align="center" prop="school.schoolName" :show-overflow-tooltip="true" />
-            <el-table-column label="学生姓名" align="center" prop="studentName" />
+            <el-table-column label="用户姓名" align="center" prop="studentName" />
             <el-table-column label="学号" align="center" prop="studentNumber" />
             <el-table-column label="邮箱" align="center" prop="email" />
             <el-table-column label="电话号" align="center" prop="phoneNumber" />
@@ -224,7 +224,7 @@
             @pagination="getList"
             />
       </el-col>
-    </el-row><!-- 添加或修改学生信息对话框 -->
+    </el-row><!-- 添加或修改用户信息对话框 -->
   </div>
 </template>
 
@@ -250,7 +250,7 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 学生信息表格数据
+      // 用户信息表格数据
       studentList: [],
       // 状态数据字典
       statusOptions: [],
@@ -291,7 +291,7 @@ export default {
           { required: true, message: "学院id不能为空", trigger: "blur" }
         ],
         studentName: [
-          { required: true, message: "学生姓名不能为空", trigger: "blur" }
+          { required: true, message: "用户姓名不能为空", trigger: "blur" }
         ],
         studentNumber: [
           { required: true, message: "学号不能为空", trigger: "blur" }
@@ -316,7 +316,7 @@ export default {
     }
   },
   methods: {
-    /** 查询学生信息列表 */
+    /** 查询用户信息列表 */
     getList() {
       this.loading = true;
       listStudent(this.queryParams).then(response => {
@@ -392,7 +392,7 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加学生信息";
+      this.title = "添加用户信息";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -401,17 +401,17 @@ export default {
       getStudent(studentId).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改学生信息";
+        this.title = "修改用户信息";
       });
     },
-    /** 停用学生 */
+    /** 停用用户 */
     bindStudent(row){
       const student = {
         studentId: row.studentId,
         status: "1"
       }
       const studentIds = row.studentId || this.ids;
-      this.$confirm('是否确认停用学生信息编号为"' + studentIds + '"的数据项?', "警告", {
+      this.$confirm('是否确认停用用户信息编号为"' + studentIds + '"的数据项?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
@@ -448,7 +448,7 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const studentIds = row.studentId || this.ids;
-      this.$confirm('是否确认删除学生信息编号为"' + studentIds + '"的数据项?', "警告", {
+      this.$confirm('是否确认删除用户信息编号为"' + studentIds + '"的数据项?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
@@ -462,7 +462,7 @@ export default {
     /** 导出按钮操作 */
     handleExport() {
       const queryParams = this.queryParams;
-      this.$confirm('是否确认导出所有学生信息数据项?', "警告", {
+      this.$confirm('是否确认导出所有用户信息数据项?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"

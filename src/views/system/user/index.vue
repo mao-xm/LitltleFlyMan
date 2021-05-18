@@ -3,7 +3,7 @@
     <el-row :gutter="20">
       <el-col :span="20" :xs="24">
         <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-           <el-form-item label="用户学校" prop="schoolName">
+           <el-form-item label="员工学校" prop="schoolName">
              <el-select
             v-model="queryParams.schoolId"
             placeholder="请选择归属学校"
@@ -19,10 +19,10 @@
                 />
             </el-select>
           </el-form-item>
-          <el-form-item label="用户名称" prop="userName">
+          <el-form-item label="员工名称" prop="userName">
             <el-input
               v-model="queryParams.userName"
-              placeholder="请输入用户名称"
+              placeholder="请输入员工名称"
               clearable
               size="small"
               style="width: 240px"
@@ -42,7 +42,7 @@
           <el-form-item label="状态" prop="status">
             <el-select
               v-model="queryParams.status"
-              placeholder="用户状态"
+              placeholder="员工状态"
               clearable
               size="small"
               style="width: 240px"
@@ -126,9 +126,9 @@
 
         <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="50" align="center" />
-          <el-table-column label="用户编号" align="center" prop="userId" />
-          <el-table-column label="用户名称" align="center" prop="userName" :show-overflow-tooltip="true" />
-          <el-table-column label="用户昵称" align="center" prop="userNick" :show-overflow-tooltip="true" />
+          <el-table-column label="员工编号" align="center" prop="userId" />
+          <el-table-column label="员工名称" align="center" prop="userName" :show-overflow-tooltip="true" />
+          <el-table-column label="员工昵称" align="center" prop="userNick" :show-overflow-tooltip="true" />
           <el-table-column label="学校" align="center" prop="school.schoolName" :show-overflow-tooltip="true" />
           <el-table-column label="手机号码" align="center" prop="phoneNumber" width="120" />
           <el-table-column label="状态" align="center">
@@ -194,8 +194,8 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="用户昵称" prop="userNick">
-              <el-input v-model="form.userNick" placeholder="请输入用户昵称" />
+            <el-form-item label="员工昵称" prop="userNick">
+              <el-input v-model="form.userNick" placeholder="请输入员工昵称" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -231,19 +231,19 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item v-if="form.userId == undefined" label="用户名称" prop="userName">
-              <el-input v-model="form.userName" placeholder="请输入用户名称" />
+            <el-form-item v-if="form.userId == undefined" label="员工名称" prop="userName">
+              <el-input v-model="form.userName" placeholder="请输入员工名称" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item v-if="form.userId == undefined" label="用户密码" prop="password">
-              <el-input v-model="form.password" placeholder="请输入用户密码" type="password" />
+            <el-form-item v-if="form.userId == undefined" label="员工密码" prop="password">
+              <el-input v-model="form.password" placeholder="请输入员工密码" type="password" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="用户性别">
+            <el-form-item label="员工性别">
               <el-select v-model="form.sex" placeholder="请选择">
                 <el-option
                   v-for="dict in sexOptions"
@@ -296,7 +296,7 @@
       </div>
     </el-dialog>
 
-    <!-- 用户导入对话框 -->
+    <!-- 员工导入对话框 -->
     <el-dialog :title="upload.title" :visible.sync="upload.open" width="400px" append-to-body>
       <el-upload
         ref="upload"
@@ -316,7 +316,7 @@
           <em>点击上传</em>
         </div>
         <div class="el-upload__tip" slot="tip">
-          <el-checkbox v-model="upload.updateSupport" />是否更新已经存在的用户数据
+          <el-checkbox v-model="upload.updateSupport" />是否更新已经存在的员工数据
           <el-link type="info" style="font-size:12px" @click="importTemplate">下载模板</el-link>
         </div>
         <div class="el-upload__tip" style="color:red" slot="tip">提示：仅允许导入“xls”或“xlsx”格式文件！</div>
@@ -352,7 +352,7 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 用户表格数据
+      // 员工表格数据
       userList: null,
       // 弹出层标题
       title: "",
@@ -380,15 +380,15 @@ export default {
         children: "children",
         label: "label"
       },
-      // 用户导入参数
+      // 员工导入参数
       upload: {
-        // 是否显示弹出层（用户导入）
+        // 是否显示弹出层（员工导入）
         open: false,
-        // 弹出层标题（用户导入）
+        // 弹出层标题（员工导入）
         title: "",
         // 是否禁用上传
         isUploading: false,
-        // 是否更新已经存在的用户数据
+        // 是否更新已经存在的员工数据
         updateSupport: 0,
         // 设置上传的请求头部
         headers: { Authorization: "Bearer " + getToken() },
@@ -408,16 +408,16 @@ export default {
       // 表单校验
       rules: {
         userName: [
-          { required: true, message: "用户名称不能为空", trigger: "blur" }
+          { required: true, message: "员工名称不能为空", trigger: "blur" }
         ],
         nickName: [
-          { required: true, message: "用户昵称不能为空", trigger: "blur" }
+          { required: true, message: "员工昵称不能为空", trigger: "blur" }
         ],
         collegeId: [
           { required: true, message: "归属学院不能为空", trigger: "blur" }
         ],
         password: [
-          { required: true, message: "用户密码不能为空", trigger: "blur" }
+          { required: true, message: "员工密码不能为空", trigger: "blur" }
         ],
         email: [
           { required: true, message: "邮箱地址不能为空", trigger: "blur" },
@@ -459,7 +459,7 @@ export default {
     });
   },
   methods: {
-    /** 查询用户列表 */
+    /** 查询员工列表 */
     getList() {
       this.loading = true;
       listUser(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
@@ -485,10 +485,10 @@ export default {
       this.queryParams.collegeId = data.id;
       this.getList();
     },
-    // 用户状态修改
+    // 员工状态修改
     handleStatusChange(row) {
       let text = row.status === "0" ? "启用" : "停用";
-      this.$confirm('确认要"' + text + '""' + row.userName + '"用户吗?', "警告", {
+      this.$confirm('确认要"' + text + '""' + row.userName + '"员工吗?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
@@ -547,7 +547,7 @@ export default {
         this.postOptions = response.posts;
         this.roleOptions = response.roles;
         this.open = true;
-        this.title = "添加用户";
+        this.title = "添加员工";
         this.form.password = this.initPassword;
       });
     },
@@ -562,7 +562,7 @@ export default {
         this.form.postIds = response.postIds;
         this.form.roleIds = response.roleIds;
         this.open = true;
-        this.title = "修改用户";
+        this.title = "修改员工";
         this.form.password = "";
       });
     },
@@ -609,7 +609,7 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const userIds = row.userId || this.ids;
-      this.$confirm('是否确认删除用户编号为"' + userIds + '"的数据项?', "警告", {
+      this.$confirm('是否确认删除员工编号为"' + userIds + '"的数据项?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
@@ -623,7 +623,7 @@ export default {
     /** 导出按钮操作 */
     handleExport() {
       const queryParams = this.queryParams;
-      this.$confirm('是否确认导出所有用户数据项?', "警告", {
+      this.$confirm('是否确认导出所有员工数据项?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
@@ -635,7 +635,7 @@ export default {
     },
     /** 导入按钮操作 */
     handleImport() {
-      this.upload.title = "用户导入";
+      this.upload.title = "员工导入";
       this.upload.open = true;
     },
     /** 下载模板操作 */

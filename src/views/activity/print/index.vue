@@ -187,10 +187,14 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="学生id：" label-width="120px"  v-if="printDetail.studentId">{{printDetail.studentId}}</el-form-item>
+          </el-col>
+           <el-col :span="12">
             <el-form-item label="学生姓名：" label-width="120px" v-if="printDetail.studentName">{{ printDetail.studentName}}</el-form-item>
           </el-col>
            <el-col :span="12">
             <el-form-item label="学生备注：" label-width="120px" v-if="printDetail.remark">{{printDetail.remark}}</el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item label="学生地址：" label-width="120px" v-if="printDetail.address">{{printDetail.address}}</el-form-item>
           </el-col>
           <el-col :span="12">
@@ -199,11 +203,12 @@
                     <span v-if= "dict.dictValue === printDetail.bothSideFlag">{{dict.dictLabel}}</span>
               </div>
             </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item label="封胶标志：" label-width="120px" v-if="printDetail.sealingFlag">
                <div v-for="dict in sealingOptions">
                     <span v-if= "dict.dictValue === printDetail.sealingFlag">{{dict.dictLabel}}</span>
               </div>
-
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -214,6 +219,8 @@
                 </div>
               </template>
             </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item label="彩印标志：" label-width="120px" v-if="printDetail.colorFlag">
                <div v-for="dict in colorOptions">
                   <span v-if= "dict.dictValue ===printDetail.colorFlag">{{dict.dictLabel}}</span>
@@ -232,10 +239,14 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="派送人员id：" label-width="120px" v-if="printDetail.userDelivery&&printDetail.userDelivery.userId">{{printDetail.userDelivery.userId}}</el-form-item>
+          </el-col>
+           <el-col :span="12">
             <el-form-item label="派送人员姓名：" label-width="120px" v-if="printDetail.userDelivery&&printDetail.userDelivery.userName">{{ printDetail.userDelivery.userName}}</el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="派送人员电话：" label-width="120px" v-if="printDetail.userDelivery&&printDetail.userDelivery.phonenumber">{{printDetail.userDelivery.phonenumber}}</el-form-item>
+          </el-col>
+           <el-col :span="12">
             <el-form-item label="派送人员邮箱：" label-width="120px"  v-if="printDetail.userDelivery&&printDetail.userDelivery.email">{{printDetail.userDelivery.email}}</el-form-item>
           </el-col>
             <el-col :span="12">
@@ -250,10 +261,14 @@
             </el-col>
              <el-col :span="12">
             <el-form-item label="打印人员id：" label-width="120px" v-if="printDetail.userPrint&&printDetail.userPrint.userId">{{printDetail.userPrint.userId}}</el-form-item>
+          </el-col>
+           <el-col :span="12">
             <el-form-item label="打印人员姓名：" label-width="120px"  v-if="printDetail.userPrint&&printDetail.userPrint.userName">{{printDetail.userPrint.userName }}</el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="打印人员电话：" label-width="120px" v-if="printDetail.userPrint&&printDetail.userPrint.phonenumber">{{printDetail.userPrint.phonenumber}}</el-form-item>
+          </el-col>
+           <el-col :span="12">
             <el-form-item label="打印人员邮箱：" label-width="120px" v-if="printDetail.userPrint&&printDetail.userPrint.email">{{ printDetail.userPrint.email}}</el-form-item>
           </el-col>
           <el-col :span="12">
@@ -264,7 +279,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="打印人员备注：" label-width="120px">{{((printDetail.userPrint&&printDetail.userPrint.remark)?printDetail.userPrint.remark:'暂无数据')}}</el-form-item>
+            <el-form-item label="打印人员备注：" label-width="120px" v-if="printDetail.userPrint&&printDetail.userPrint.remark">{{printDetail.userPrint.remark}}</el-form-item>
           </el-col>
            <el-col :span="12">
             <el-form-item label="取消时间：" label-width="120px" v-if="printDetail.cancelTime">{{timeChange(printDetail.cancelTime)}}</el-form-item>
