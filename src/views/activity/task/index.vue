@@ -108,7 +108,7 @@
           <el-button
             size="mini"
             type="text"
-           icon="el-icon-more"
+           icon="el-icon-view"
             @click="check(scope.row)"
             v-hasPermi="['activity:print:edit']"
            v-if="scope.row.checkFlag"
@@ -116,7 +116,7 @@
            <el-button
             size="mini"
             type="text"
-           icon="el-icon-more"
+           icon="el-icon-view"
             @click="handleDetail(scope.row)"
             v-hasPermi="['activity:print:edit']"
           >详情</el-button>

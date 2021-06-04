@@ -11,7 +11,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="反馈人ID" prop="studentId">
+      <el-form-item label="反馈人ID" prop="studentId" label-width="100px">
         <el-input
           v-model="queryParams.studentId"
           placeholder="请输入反馈人ID"
@@ -20,7 +20,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="处理人ID" prop="userManageId">
+      <el-form-item label="处理人ID" prop="userManageId" label-width="100px">
         <el-input
           v-model="queryParams.userManageId"
           placeholder="请输入处理人ID"
@@ -74,7 +74,7 @@
       <el-table-column label="处理人ID" align="center" prop="userManageId" />
       <el-table-column label="处理意见" align="center" prop="manageContent" show-overflow-tooltip="true"/>
       <el-table-column label="订单ID" align="center" prop="orderId" />
-      <el-table-column label="备注" align="center" prop="remark" show-overflow-tooltip="true"/>
+      <!-- <el-table-column label="备注" align="center" prop="remark" show-overflow-tooltip="true"/> -->
        <el-table-column label="订单类型" align="center" prop="orderType">
               <template slot-scope="scope">
                 <div v-for="dict in feedbackOrderOptions">
@@ -83,11 +83,11 @@
               </template>
       </el-table-column>
       <el-table-column label="反馈内容" align="center" prop="feedbackContent" show-overflow-tooltip="true"/>
-      <el-table-column label="处理时间" align="center" prop="manageTime" width="180">
+      <!-- <el-table-column label="处理时间" align="center" prop="manageTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.manageTime, '{y}-{m}-{d}') }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="150px">
         <template slot-scope="scope">
            <el-button
@@ -100,7 +100,7 @@
               <el-button
                 size="mini"
                 type="text"
-                icon="el-icon-more"
+                icon="el-icon-view"
                 @click="handleDetail(scope.row)"
               >详情</el-button>
           <!-- <el-button

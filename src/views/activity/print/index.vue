@@ -64,7 +64,7 @@
             v-for="dict in paperOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
-            :value="dict.dictLabel"
+            :value="dict.dictValue"
           />
         </el-select>
       </el-form-item>
@@ -100,6 +100,9 @@
       <el-table-column label="学生Id" align="center" prop="studentId" />
       <el-table-column label="文件名" align="center" prop="fileName" show-overflow-tooltip="true"/>
       <el-table-column label="打印数量" align="center" prop="printNumber" />
+            <el-table-column label="配送地址" align="center" prop="address" />
+      <el-table-column label="配送收件人" align="center" prop="takeName" />
+      <el-table-column label="配送收件电话" align="center" prop="takeNumber" />
       <el-table-column label="单双面标志" align="center">
               <template slot-scope="scope">
                 <div v-for="dict in bothSideOptions">
@@ -149,7 +152,7 @@
             <el-button
             size="mini"
             type="text"
-           icon="el-icon-more"
+           icon="el-icon-view"
             @click="handleDetail(scope.row)"
             v-hasPermi="['activity:print:edit']"
             v-if=""

@@ -119,8 +119,10 @@
       <el-table-column label="洗衣Id" align="center" prop="washingId" />
       <el-table-column label="学生Id" align="center" prop="studentId" />
       <el-table-column label="配送地址id" align="center" prop="addressId" show-overflow-tooltip="true"/>
-      <!-- <el-table-column label="清洗类型" align="center" prop="washType" />
-      <el-table-column label="衣物类型" align="center" prop="clothesType" /> -->
+      <!-- <!-- <el-table-column label="清洗类型" align="center" prop="washType" /> -->
+      <el-table-column label="配送地址" align="center" prop="address" />
+      <el-table-column label="配送收件人" align="center" prop="takeName" />
+      <el-table-column label="配送收件电话" align="center" prop="takeNumber" />
       <el-table-column label="衣物类型" align="center">
               <template slot-scope="scope">
                 <div v-for="dict in clothesTypeOptions">
@@ -137,7 +139,7 @@
       </el-table-column>
       <el-table-column label="衣物数量" align="center" prop="clothesNumber" />
       <el-table-column label="金额" align="center" prop="fee" />
-      <el-table-column label="学生备注" align="center" prop="studentRemark" show-overflow-tooltip="true"/>
+      <!-- <el-table-column label="学生备注" align="center" prop="studentRemark" show-overflow-tooltip="true"/> -->
       <el-table-column label="清洗订单状态" align="center">
               <template slot-scope="scope">
                 <div v-for="dict in statusOptions">
@@ -145,11 +147,11 @@
                 </div>
               </template>
       </el-table-column>
-      <el-table-column label="接单员工id" align="center" prop="userTakeId" />
+      <!-- <el-table-column label="接单员工id" align="center" prop="userTakeId" />
       <el-table-column label="接衣服员工id" align="center" prop="userFetchId" />
       <el-table-column label="配送衣服员工id" align="center" prop="userDeliveryId" />
       <el-table-column label="清洗衣服员工id" align="center" prop="userWashingId" />
-      <el-table-column label="备注" align="center" prop="remark" show-overflow-tooltip="true"/>
+      <el-table-column label="备注" align="center" prop="remark" show-overflow-tooltip="true"/> -->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200px">
         <template slot-scope="scope">
            <el-button
@@ -166,7 +168,7 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-more"
+            icon="el-icon-view"
             @click="handleDetail(scope.row)"
           >详情</el-button>
         </template>
@@ -242,49 +244,71 @@
            <el-col :span="12">
             <el-form-item label="派送人员备注：" label-width="120px" v-if=" laundryDetail.userDelivery&&laundryDetail.userDelivery.remark">{{laundryDetail.userDelivery.remark}}</el-form-item>
             </el-col>
-            <el-col :span="12">
-            <el-form-item label="接衣人员id：" label-width="120px" v-if=" laundryDetail.userPike&&laundryDetail.userPike.userId">{{laundryDetail.userPike.userId}}</el-form-item>
+           <el-col :span="12">
+            <el-form-item label="接单人员id：" label-width="120px" v-if=" laundryDetail.userTake&&laundryDetail.userTake.userId">{{laundryDetail.userTake.userId}}</el-form-item>
           </el-col>
             <el-col :span="12">
-            <el-form-item label="接衣人员姓名：" label-width="120px" v-if=" laundryDetail.userPike&&laundryDetail.userPike.userName">{{laundryDetail.userPike.userName}}</el-form-item>
+            <el-form-item label="接单人员姓名：" label-width="120px" v-if=" laundryDetail.userTake&&laundryDetail.userTake.userName">{{laundryDetail.userTake.userName}}</el-form-item>
           </el-col>
            <el-col :span="12">
-            <el-form-item label="接衣人员电话：" label-width="120px" v-if=" laundryDetail.userPike&&laundryDetail.userPike.phonenumber">{{laundryDetail.userPike.phonenumber}}</el-form-item>
+            <el-form-item label="接单人员电话：" label-width="120px" v-if=" laundryDetail.userTake&&laundryDetail.userTake.phonenumber">{{laundryDetail.userTake.phonenumber}}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="接衣人员邮箱：" label-width="120px"  v-if=" laundryDetail.userPike&&laundryDetail.userPike.email">{{laundryDetail.userPike.email}}</el-form-item>
+            <el-form-item label="接单人员邮箱：" label-width="120px"  v-if=" laundryDetail.userTake&&laundryDetail.userTake.email">{{laundryDetail.userTake.email}}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="接衣人员性别：" label-width="120px"  v-if=" laundryDetail.userPike&&laundryDetail.userPike.sex">
+            <el-form-item label="接单人员性别：" label-width="120px"  v-if=" laundryDetail.userTake&&laundryDetail.userTake.sex">
               <div v-for="dict in userSexOptions"  >
-                  <span v-if= "dict.dictValue ===laundryDetail.userPike.sex">{{dict.dictLabel}}</span>
+                  <span v-if= "dict.dictValue ===laundryDetail.userTake.sex">{{dict.dictLabel}}</span>
                 </div>
             </el-form-item>
           </el-col>
            <el-col :span="12">
-            <el-form-item label="接衣人员备注：" label-width="120px" v-if=" laundryDetail.userPike&&laundryDetail.userPike.remark">{{laundryDetail.userPike.remark}}</el-form-item>
+            <el-form-item label="接单人员备注：" label-width="120px" v-if=" laundryDetail.userTake&&laundryDetail.userTake.remark">{{laundryDetail.userTake.remark}}</el-form-item>
+          </el-col>
+            <el-col :span="12">
+            <el-form-item label="接衣人员id：" label-width="120px" v-if=" laundryDetail.userFetch&&laundryDetail.userFetch.userId">{{laundryDetail.userFetch.userId}}</el-form-item>
+          </el-col>
+            <el-col :span="12">
+            <el-form-item label="接衣人员姓名：" label-width="120px" v-if=" laundryDetail.userFetch&&laundryDetail.userFetch.userName">{{laundryDetail.userFetch.userName}}</el-form-item>
+          </el-col>
+           <el-col :span="12">
+            <el-form-item label="接衣人员电话：" label-width="120px" v-if=" laundryDetail.userFetch&&laundryDetail.userFetch.phonenumber">{{laundryDetail.userFetch.phonenumber}}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="清洗人员id：" label-width="120px" v-if=" laundryDetail.userWash&&laundryDetail.userWash.userId">{{laundryDetail.userWash.userId}}</el-form-item>
+            <el-form-item label="接衣人员邮箱：" label-width="120px"  v-if=" laundryDetail.userFetch&&laundryDetail.userFetch.email">{{laundryDetail.userFetch.email}}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="清洗人员姓名：" label-width="120px" v-if=" laundryDetail.userWash&&laundryDetail.userWash.userName">{{laundryDetail.userWash.userName}}</el-form-item>
+            <el-form-item label="接衣人员性别：" label-width="120px"  v-if=" laundryDetail.userFetch&&laundryDetail.userFetch.sex">
+              <div v-for="dict in userSexOptions"  >
+                  <span v-if= "dict.dictValue ===laundryDetail.userFetch.sex">{{dict.dictLabel}}</span>
+                </div>
+            </el-form-item>
+          </el-col>
+           <el-col :span="12">
+            <el-form-item label="接衣人员备注：" label-width="120px" v-if=" laundryDetail.userFetch&&laundryDetail.userFetch.remark">{{laundryDetail.userFetch.remark}}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="清洗人员电话：" label-width="120px" v-if=" laundryDetail.userWash&&laundryDetail.userWash.phonenumber">{{laundryDetail.userWash.phonenumber}}</el-form-item>
+            <el-form-item label="清洗人员id：" label-width="120px" v-if=" laundryDetail.userWashing&&laundryDetail.userWashing.userId">{{laundryDetail.userWashing.userId}}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="清洗人员邮箱：" label-width="120px"  v-if=" laundryDetail.userWash&&laundryDetail.userWash.email">{{laundryDetail.userWash.email}}</el-form-item>
+            <el-form-item label="清洗人员姓名：" label-width="120px" v-if=" laundryDetail.userWashing&&laundryDetail.userWashing.userName">{{laundryDetail.userWashing.userName}}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="清洗人员性别：" label-width="120px"  v-if=" laundryDetail.userWash&&laundryDetail.userWash.sex">
+            <el-form-item label="清洗人员电话：" label-width="120px" v-if=" laundryDetail.userWashing&&laundryDetail.userWashing.phonenumber">{{laundryDetail.userWashing.phonenumber}}</el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="清洗人员邮箱：" label-width="120px"  v-if=" laundryDetail.userWashing&&laundryDetail.userWashing.email">{{laundryDetail.userWashing.email}}</el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="清洗人员性别：" label-width="120px"  v-if=" laundryDetail.userWashing&&laundryDetail.userWashing.sex">
                <div v-for="dict in userSexOptions"  >
-                  <span v-if= "dict.dictValue ===laundryDetail.userWash.sex">{{dict.dictLabel}}</span>
+                  <span v-if= "dict.dictValue ===laundryDetail.userWashing.sex">{{dict.dictLabel}}</span>
                 </div>
             </el-form-item>
           </el-col>
            <el-col :span="12">
-            <el-form-item label="清洗人员备注：" label-width="120px"  v-if=" laundryDetail.userWash&&laundryDetail.userWash.remark">{{laundryDetail.userWash.remark}}</el-form-item>
+            <el-form-item label="清洗人员备注：" label-width="120px"  v-if=" laundryDetail.userWashing&&laundryDetail.userWashing.remark">{{laundryDetail.userWashing.remark}}</el-form-item>
           </el-col>
            <el-col :span="12">
             <el-form-item label="取消时间：" label-width="120px" v-if="laundryDetail.cancelTime">{{parseTime(laundryDetail.cancelTime, '{y}-{m}-{d}') }}</el-form-item>
@@ -830,6 +854,7 @@ export default {
        this.updateParams.washingId=row.washingId;
       if(row.status=='1'){
          this.updateParams.status='2';
+         this.updateParams.userTakeId = this.uId;
          var Params= this.updateParams;
           this.$confirm('是否确认修改为接单状态?', "提示", {
           confirmButtonText: "确定",

@@ -138,6 +138,9 @@
       <el-table-column label="取件码" align="center" prop="takeCode" />
       <el-table-column label="收件人" align="center" prop="takeName" />
       <el-table-column label="取件地址" align="center" prop="address" show-overflow-tooltip="true"/>
+      <el-table-column label="配送地址" align="center" prop="dAddress" />
+      <el-table-column label="配送收件人" align="center" prop="dTakeName" />
+      <el-table-column label="配送收件电话" align="center" prop="dTakeNumber" />
       <el-table-column label="订单状态" align="center">
               <template slot-scope="scope">
                 <div v-for="dict in statusOptions">
@@ -146,11 +149,11 @@
               </template>
       </el-table-column>
       <el-table-column label="收件联系电话" align="center" prop="takePhone" />
-      <el-table-column label="代取员工Id" align="center" prop="userPickId" />
-      <el-table-column label="学生备注" align="center" prop="studentRemark" show-overflow-tooltip="true"/>
+      <!-- <el-table-column label="代取员工Id" align="center" prop="userPickId" /> -->
+      <!-- <el-table-column label="学生备注" align="center" prop="studentRemark" show-overflow-tooltip="true"/> -->
       <el-table-column label="配送地址id" align="center" prop="addressId" />
       <el-table-column label="金额" align="center" prop="fee" />
-      <el-table-column label="备注" align="center" prop="remark" show-overflow-tooltip="true"/>
+      <!-- <el-table-column label="备注" align="center" prop="remark" show-overflow-tooltip="true"/> -->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200px">
         <template slot-scope="scope">
            <el-button
@@ -167,7 +170,7 @@
           <el-button
           size="mini"
             type="text"
-            icon="el-icon-more"
+            icon="el-icon-view"
             @click="handleDetail(scope.row)"
           >详情</el-button>
           <!-- <el-button
@@ -215,25 +218,27 @@
                     <span v-if= "dict.dictValue === packageDetail.status">{{dict.dictLabel}}</span>
               </div>
             </el-form-item>
+            </el-col>
+            <el-col :span="12">
             <el-form-item label="费用:" label-width="113px" v-if="packageDetail.fee">{{packageDetail.fee}}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="派送人员id：" label-width="120px"  v-if="packageDetail.userPike&&packageDetail.userPike.userId">{{ packageDetail.userPike.userId }}</el-form-item>
-            <el-form-item label="派送人员姓名：" label-width="120px" v-if="packageDetail.userPike&&packageDetail.userPike.userName">{{packageDetail<i class="fas fa-swap-opacity .fad"></i>userPike.userName}}</el-form-item>
+            <el-form-item label="派送人员id：" label-width="120px"  v-if="packageDetail.userPick&&packageDetail.userPick.userId">{{ packageDetail.userPick.userId }}</el-form-item>
+            <el-form-item label="派送人员姓名：" label-width="120px" v-if="packageDetail.userPick&&packageDetail.userPick.userName">{{packageDetail.userPick.userName}}</el-form-item>
           </el-col>
          <el-col :span="12">
-            <el-form-item label="派送人员电话：" label-width="120px" v-if="packageDetail.userPike&&packageDetail.userPike.phonenumber">{{packageDetail.userPike.phonenumber}}</el-form-item>
-            <el-form-item label="派送人员邮箱：" label-width="120px" v-if="packageDetail.userPike&&packageDetail.userPike.email">{{ packageDetail.userPike.email}}</el-form-item>
+            <el-form-item label="派送人员电话：" label-width="120px" v-if="packageDetail.userPick&&packageDetail.userPick.phonenumber">{{packageDetail.userPick.phonenumber}}</el-form-item>
+            <el-form-item label="派送人员邮箱：" label-width="120px" v-if="packageDetail.userPick&&packageDetail.userPick.email">{{ packageDetail.userPick.email}}</el-form-item>
           </el-col>
             <el-col :span="12">
-            <el-form-item label="派送人员性别：" label-width="120px" v-if="packageDetail.userPike&&packageDetail.userPike.sex">
+            <el-form-item label="派送人员性别：" label-width="120px" v-if="packageDetail.userPick&&packageDetail.userPick.sex">
               <div v-for="dict in userSexOptions" >
-                    <span v-if= "dict.dictValue === packageDetail.userPike.sex">{{dict.dictLabel}}</span>
+                    <span v-if= "dict.dictValue === packageDetail.userPick.sex">{{dict.dictLabel}}</span>
               </div>
             </el-form-item>
            </el-col>
            <el-col :span="12">
-            <el-form-item label="派送人员备注：" label-width="120px"  v-if="packageDetail.userPike&&packageDetail.userPike.remark">{{userDelivery.remark}}</el-form-item>
+            <el-form-item label="派送人员备注：" label-width="120px"  v-if="packageDetail.userPick&&packageDetail.userPick.remark">{{packageDetail.userPick.remark}}</el-form-item>
             </el-col>
              <el-col :span="12">
             <el-form-item label="取消时间：" label-width="120px" v-if="packageDetail.cancelTime">{{parseTime(packageDetail.cancelTime, '{y}-{m}-{d}') }}</el-form-item>
